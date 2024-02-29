@@ -1,4 +1,5 @@
 Terrain terrain;
+Camera camera = new Camera(10, 1, 4);
 Debug debug = new Debug();
 
 void setup() {
@@ -9,7 +10,6 @@ void setup() {
 }
 
 void draw() {
-  terrain.drawAt(new PVector(0/2, 0/2), 5);
-  terrain.noiseScale = ((float)mouseY/height)*100;
+  terrain.drawAt(camera);
   debug.draw();
 }

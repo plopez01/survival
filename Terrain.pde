@@ -1,23 +1,19 @@
 class Terrain {
   color[] tileSet;
-  float noiseScale;
+  float scale;
   
-  Terrain(color[] tileSet, float noiseScale){
+  Terrain(color[] tileSet, float scale){
     this.tileSet = tileSet;
-    this.noiseScale = noiseScale;
+    this.scale = scale;
   }
   
-  void generate(){
-    
-  }
-  
-  void drawAt(PVector pos, float scale) {
+  void drawAt(Camera cam) {
     for (int xoff = 0; xoff < width/scale; xoff++) {
       for (int yoff = 0; yoff < height/scale; yoff++) {
-        float x = pos.x + xoff;
-        float y = pos.y + yoff;
+        float x = cam.position.x + xoff;
+        float y = cam.position.y + yoff;
         
-        float terrainHeight = noise(x/noiseScale, y/noiseScale);
+        float terrainHeight = noise(x/cam.zoom, y/cam.zoom);
         if (colorRegion(terrainHeight, color(0, 0, 255), color(70, 70, 255), 0, 0.3));
         else if (colorRegion(terrainHeight, color(70, 70, 255), color(200, 200, 100), 0.3, 0.35));
         else if (colorRegion(terrainHeight, color(200, 200, 100), color(40, 120, 40), 0.35, 0.6));
