@@ -20,8 +20,7 @@ class Renderer implements Renderable {
         pushMatrix();
         
         PVector screenSpace = cam.toRelativeScreenSpace(worldObject.transform);
-        print("Relative:");
-        println(screenSpace);
+
         strokeWeight(g.strokeWeight/screenSpace.z);
         translate(screenSpace.x, screenSpace.y);
         
