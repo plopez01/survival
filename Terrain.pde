@@ -1,19 +1,30 @@
 class Terrain {
-  color[] tileSet;
-  float scale;
+  int terrainSize, translationOffset;
+  float heightOffset;
   
-  Terrain(color[] tileSet, float scale){
-    this.tileSet = tileSet;
-    this.scale = scale;
+  int baseDetail, zoomDetail;
+  
+  Terrain(int terrainSize, int translationOffset, float heightOffset, int baseDetail, int zoomDetail){
+    this.terrainSize = terrainSize;
+    this.translationOffset = translationOffset;
+    this.heightOffset = heightOffset;
+    
+    this.baseDetail = baseDetail;
+    this.zoomDetail = zoomDetail;
   }
   
-  void drawAt(Camera cam) {
-    for (int xoff = 0; xoff < width/scale; xoff++) {
-      for (int yoff = 0; yoff < height/scale; yoff++) {
-        float x = cam.position.x + xoff;
-        float y = cam.position.y + yoff;
+  void renderAt(Camera cam) {
+    stroke(255, 20);
+    for (int xoff = 0; xoff < width/cam.resolution; xoff++) {
+      for (int yoff = 0; yoff < height/cam.resolution; yoff++) {
+        float x = (cam.transform.x*cam.zoom + xoff) -((float)width/cam.resolution/2);
+        float y = (cam.transform.y*cam.zoom + yoff) -((float)height/cam.resolution/2);
         
-        float terrainHeight = noise(x/cam.zoom, y/cam.zoom);
+        noiseDetail(round(zoomDetail*cam.getZoomPosition()) + baseDetail);
+        
+        float distanceFromOrigin = (abs(x/cam.zoom)+abs(y/cam.zoom))/terrainSize+heightOffset;
+        float terrainHeight = noise(x/cam.zoom+translationOffset, y/cam.zoom+translationOffset)/distanceFromOrigin;
+        
         if (colorRegion(terrainHeight, color(0, 0, 255), color(70, 70, 255), 0, 0.3));
         else if (colorRegion(terrainHeight, color(70, 70, 255), color(200, 200, 100), 0.3, 0.35));
         else if (colorRegion(terrainHeight, color(200, 200, 100), color(40, 120, 40), 0.35, 0.6));
@@ -21,7 +32,7 @@ class Terrain {
         else if (colorRegion(terrainHeight, color(80, 60, 60), color(180), 0.65, 0.8));
         else fill(255*terrainHeight);
         
-        rect(xoff*scale, yoff*scale, scale, scale);
+        rect(xoff*cam.resolution, yoff*cam.resolution, cam.resolution, cam.resolution);
       }
     }
   }
