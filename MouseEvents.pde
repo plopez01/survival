@@ -12,6 +12,13 @@ void mousePressed(){
 void mouseReleased(){
 }
 
+void mouseClicked(){
+  player.commandMove(camera.getRelativeWorldMouse(mouse));
+  TestObject obj = new TestObject();
+  obj.transform.sub(camera.getRelativeWorldMouse(mouse));
+  renderer.add(obj);
+}
+
 void mouseDragged(){
   PVector mousePos = new PVector(mouseX, mouseY);
   

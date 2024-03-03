@@ -20,7 +20,7 @@ class Debug {
   
   void render(){
     fill(255);
-    textSize(18);
+    textSize(16);
     text(debugText, 0, 0);
     
     debugText = "";

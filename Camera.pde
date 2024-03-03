@@ -40,6 +40,10 @@ class Camera extends WorldObject {
     return multiplyVectors(mouse.getMouseDistFromCenter(), getWorldViewportSize());
   }
   
+  PVector getRelativeWorldMouse(Mouse mouse){
+    return multiplyVectors(mouse.getMouseDistFromCenter(), getWorldViewportSize()).add(transform);
+  }
+  
   PVector getWorldViewportSize(){
     return toWorldSpace(new PVector(width, height));
   }
