@@ -1,39 +1,44 @@
 import processing.net.*;
+SeedManager seedManager = new SeedManager();
 
 Debug debug = new Debug();
-Logger log = new Logger(LOGGING_LEVEL.ALL);
-
-Terrain terrain;
-Camera camera = new Camera(16, 20, new RangeConstrain(10, 80), 1, 4);
+Logger log = new Logger(LOGGING_LEVEL.ALL, "CLIENT> ");
 
 Mouse mouse = new Mouse();
 
-Renderer renderer = new Renderer(camera, 0.01);
-
 Player player = new Player("Pau", 10000, color(random(255), random(255), random(255)));
+
+boolean host = false;
+GameServer server;
+GameClient client;
+
 void setup() {
   log.info("Starting game.");
-  fullScreen();
+  //fullScreen();
+  size(640, 480);
+  
   background(0);
   
-  terrain = new Terrain(4, 5000, 0.5, 5, 5);
-  log.info("World seed: " + terrain.getSeed());
-    
-    
-  player.translate(new PVector(0, 0));
-  renderer.add(player);
+  if (host) {
+    server = new GameServer(this, 5000, seedManager.seed);
+    log.info("Server started at port " + server.port);
+  }
+  
+  client = new GameClient(this, "127.0.0.0", 5000);
+  log.info("Connected to server!");
+  
+  log.info("World seed: " + seedManager.seed);
 }
 
 void draw() {
-  terrain.renderAt(camera);
-    
-  renderer.render();
+  client.tick();
   
   debug.add("FPS", frameRate);
-  debug.add("Pos", camera.transform);
-  debug.add("Zoom", camera.zoom);
+  debug.add("Game seed", seedManager.seed);
+  debug.add("Pos", client.camera.transform);
+  debug.add("Zoom", client.camera.zoom);
   debug.add("ScreenMouse", mouse.getMouseDistFromCenter());
-  debug.add("WorldMouse", camera.getRelativeWorldMouse(mouse));
+  debug.add("WorldMouse", client.camera.getRelativeWorldMouse(mouse));
   //debug.showPointer();
   debug.render();
 }

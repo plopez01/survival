@@ -4,7 +4,6 @@ class Terrain {
   
   int baseDetail, zoomDetail;
   
-  int seed;
   Terrain(int terrainSize, int translationOffset, float heightOffset, int baseDetail, int zoomDetail){
     this.terrainSize = terrainSize;
     this.translationOffset = translationOffset;
@@ -12,23 +11,6 @@ class Terrain {
     
     this.baseDetail = baseDetail;
     this.zoomDetail = zoomDetail;
-    
-    // We need to generate a new seed because we can't access the randomized processing internal ones
-    generateSeed();
-  }
-  
-  int getSeed() {
-    return seed;
-  }
-  
-  void setSeed(int newSeed) {
-    seed = newSeed;
-    noiseSeed(newSeed);
-    randomSeed(newSeed);
-  }
-  
-  void generateSeed(){
-    setSeed(int(random(Integer.MIN_VALUE, Integer.MAX_VALUE)));
   }
   
   void renderAt(Camera cam) {

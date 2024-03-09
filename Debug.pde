@@ -3,7 +3,7 @@ class Debug {
   
   Debug() { }
   
-  void add(String key, float value) {
+  void add(String key, Object value) {
     debugText += "\n" + key + ": " + value;
   }
   
