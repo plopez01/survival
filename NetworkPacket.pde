@@ -2,8 +2,6 @@ import java.io.*;
 
 abstract class NetworkPacket {
   PacketType type;
-  static final int size = 7;
-  
   
   NetworkPacket(PacketType type) {
     this.type = type;
@@ -11,9 +9,7 @@ abstract class NetworkPacket {
   
   NetworkPacket(InputStream is) throws IOException {
     ObjectInputStream ois = new ObjectInputStream(is);
-    log.debug("OIS:" + ois.available());
     type = PacketType.values()[ois.readByte()];
-    //log.debug("Type: " + ois.readByte());
     readFrom(ois);
   }
   
@@ -35,5 +31,6 @@ abstract class NetworkPacket {
 }
 
 enum PacketType {
-  CONNECT
+  SERVER_HANDSHAKE,
+  CLIENT_HANDSHAKE
 }

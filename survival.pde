@@ -5,9 +5,9 @@ Logger log = new Logger(LOGGING_LEVEL.ALL, "CLIENT> ");
 
 Mouse mouse = new Mouse();
 
-Player player = new Player("Pau", 10000, color(random(255), random(255), random(255)));
+Player myPlayer = new Player("Pau", 10000, color(random(255), random(255), random(255)));
 
-boolean host = false;
+boolean host = true;
 GameServer server;
 GameClient client;
 

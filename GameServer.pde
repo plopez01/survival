@@ -18,7 +18,7 @@ void serverEvent(Server someServer, Client client) {
   slog.info("We have a new client: " + client.ip());
   
   try {
-    var packet = new ConnectPacket(server.seed);
+    var packet = new ServerHandshake(server.seed);
     
     server.write(packet.serialize());
   

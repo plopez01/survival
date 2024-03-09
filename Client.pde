@@ -694,6 +694,7 @@ public static class Client implements Runnable {
     } catch (Exception e) { // null pointer or serial port dead
       //errorMessage("write", e);
       //e.printStackTrace();
+      
       //disconnect(e);
       e.printStackTrace();
       stop();

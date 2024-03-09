@@ -9,8 +9,8 @@ class GameClient extends Client {
     super(parent, adress, port);
     
     try {
-      ConnectPacket connectPacket = new ConnectPacket(input);
-      seedManager.setSeed(connectPacket.seed);
+      ServerHandshake handshake = new ServerHandshake(input);
+      seedManager.setSeed(handshake.seed);
     } catch (IOException e) {
       log.error(e);
       e.printStackTrace();
