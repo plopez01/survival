@@ -1,22 +1,24 @@
+package me.plopez.survivalgame.network.packet;
+
 import java.io.*;
 
-abstract class NetworkPacket {
+public abstract class NetworkPacket {
   PacketType type;
   
-  NetworkPacket(PacketType type) {
+  protected NetworkPacket(PacketType type) {
     this.type = type;
   }
   
-  NetworkPacket(InputStream is) throws IOException {
+  protected NetworkPacket(InputStream is) throws IOException {
     ObjectInputStream ois = new ObjectInputStream(is);
     type = PacketType.values()[ois.readByte()];
     readFrom(ois);
   }
   
-  abstract void writeTo(ObjectOutputStream stream) throws IOException;
-  abstract void readFrom(ObjectInputStream stream) throws IOException;
+  protected abstract void writeTo(ObjectOutputStream stream) throws IOException;
+  protected abstract void readFrom(ObjectInputStream stream) throws IOException;
   
-  byte[] serialize() throws IOException {
+  public byte[] serialize() throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     
     try (ObjectOutputStream os = new ObjectOutputStream(baos)) {
@@ -26,11 +28,5 @@ abstract class NetworkPacket {
     
     return baos.toByteArray();
   }
-  
-  
-}
 
-enum PacketType {
-  SERVER_HANDSHAKE,
-  CLIENT_HANDSHAKE
 }

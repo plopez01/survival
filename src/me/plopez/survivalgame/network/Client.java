@@ -1,7 +1,7 @@
-/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+package me.plopez.survivalgame.network;/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Client - basic network client implementation
+  me.plopez.survivalgame.network.Client - basic network client implementation
   Part of the Processing project - http://processing.org
 
   Copyright (c) 2004-2007 Ben Fry and Casey Reas
@@ -30,7 +30,7 @@ import java.lang.reflect.*;
 import java.net.*;
 
 /**
-   * ( begin auto-generated from Client.xml )
+   * ( begin auto-generated from me.plopez.survivalgame.network.Client.xml )
    * 
    * A client connects to a server and sends data back and forth. If anything 
    * goes wrong with the connection, for example the host is not there or is 
@@ -39,11 +39,11 @@ import java.net.*;
    * ( end auto-generated )
  * @webref net
  * @brief The client class is used to create client Objects which connect to a server to exchange data. 
- * @instanceName client any variable of type Client
+ * @instanceName client any variable of type me.plopez.survivalgame.network.Client
  * @usage Application
  * @see_external LIB_net/clientEvent
  */
-public static class Client implements Runnable {
+public class Client implements Runnable {
 
   protected static final int MAX_BUFFER_SIZE = 1 << 27; // 128 MB
 
@@ -90,7 +90,7 @@ public static class Client implements Runnable {
       disposeRegistered = true;
 
       // reflection to check whether host sketch has a call for
-      // public void clientEvent(processing.net.Client)
+      // public void clientEvent(processing.net.me.plopez.survivalgame.network.Client)
       // which would be called each time an event comes in
       try {
         clientEventMethod =
@@ -98,7 +98,7 @@ public static class Client implements Runnable {
       } catch (Exception e) {
         // no such method, or an error.. which is fine, just ignore
       }
-      // do the same for disconnectEvent(Client c);
+      // do the same for disconnectEvent(me.plopez.survivalgame.network.Client c);
       try {
         disconnectEventMethod =
           parent.getClass().getMethod("disconnectEvent", Client.class);
@@ -128,7 +128,7 @@ public static class Client implements Runnable {
     //thread.start();
 
     // reflection to check whether host sketch has a call for
-    // public void clientEvent(processing.net.Client)
+    // public void clientEvent(processing.net.me.plopez.survivalgame.network.Client)
     // which would be called each time an event comes in
     try {
       clientEventMethod =
@@ -136,7 +136,7 @@ public static class Client implements Runnable {
     } catch (Exception e) {
       // no such method, or an error.. which is fine, just ignore
     }
-    // do the same for disconnectEvent(Client c);
+    // do the same for disconnectEvent(me.plopez.survivalgame.network.Client c);
     try {
       disconnectEventMethod =
         parent.getClass().getMethod("disconnectEvent", Client.class);
@@ -150,7 +150,7 @@ public static class Client implements Runnable {
    * ( begin auto-generated from Client_stop.xml )
    * 
    * Disconnects from the server. Use to shut the connection when you're 
-   * finished with the Client.
+   * finished with the me.plopez.survivalgame.network.Client.
    * 
    * ( end auto-generated )
    * @webref client:client
@@ -237,7 +237,7 @@ public static class Client implements Runnable {
           try {
             readCount = input.read(readBuffer, 0, readBuffer.length);
           } catch (SocketException e) {
-             System.err.println("Client SocketException: " + e.getMessage());
+             System.err.println("me.plopez.survivalgame.network.Client SocketException: " + e.getMessage());
              // the socket had a problem reading so don't try to read from it again.
              stop();
              return;
@@ -245,7 +245,7 @@ public static class Client implements Runnable {
         
           // read returns -1 if end-of-stream occurs (for example if the host disappears)
           if (readCount == -1) {
-            System.err.println("Client got end-of-stream.");
+            System.err.println("me.plopez.survivalgame.network.Client got end-of-stream.");
             stop();
             return;
           }
@@ -262,7 +262,7 @@ public static class Client implements Runnable {
                 int newSize = Integer.highestOneBit(bufferLength + readCount - 1) << 1;
                 if (newSize > MAX_BUFFER_SIZE) {
                   // buffer is full because client is not reading (fast enough)
-                  System.err.println("Client: can't receive more data, buffer is full. " +
+                  System.err.println("me.plopez.survivalgame.network.Client: can't receive more data, buffer is full. " +
                                          "Make sure you read the data from the client.");
                   stop();
                   return;
@@ -323,7 +323,7 @@ public static class Client implements Runnable {
   /**
    * ( begin auto-generated from Client_ip.xml )
    * 
-   * Returns the IP address of the computer to which the Client is attached.
+   * Returns the IP address of the computer to which the me.plopez.survivalgame.network.Client is attached.
    * 
    * ( end auto-generated )
    * @webref client:client
@@ -738,7 +738,7 @@ public static class Client implements Runnable {
    * I think of something slightly more intelligent to do.
    */
   //public void errorMessage(String where, Exception e) {
-  //parent.die("Error inside Client." + where + "()", e);
+  //parent.die("Error inside me.plopez.survivalgame.network.Client." + where + "()", e);
   //e.printStackTrace(System.err);
   //}
 }

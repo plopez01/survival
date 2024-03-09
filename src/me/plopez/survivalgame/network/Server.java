@@ -1,7 +1,7 @@
-/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+package me.plopez.survivalgame.network;/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Server - basic network server implementation
+  me.plopez.survivalgame.network.Server - basic network server implementation
   Part of the Processing project - http://processing.org
 
   Copyright (c) 2004-2007 Ben Fry and Casey Reas
@@ -31,7 +31,7 @@ import java.net.*;
 
 
 /**
- * ( begin auto-generated from Server.xml )
+ * ( begin auto-generated from me.plopez.survivalgame.network.Server.xml )
  * 
  * A server sends and receives data to and from its associated clients 
  * (other programs connected to it). When a server is started, it begins 
@@ -44,9 +44,9 @@ import java.net.*;
  * @webref net
  * @usage application
  * @brief The server class is used to create server objects which send and receives data to and from its associated clients (other programs connected to it). 
- * @instanceName server    any variable of type Server
+ * @instanceName server    any variable of type me.plopez.survivalgame.network.Server
  */
-public static class Server implements Runnable {
+public class Server implements Runnable {
   PApplet parent;
   Method serverEventMethod;
 
@@ -92,7 +92,7 @@ public static class Server implements Runnable {
       parent.registerMethod("dispose", this);
 
       // reflection to check whether host applet has a call for
-      // public void serverEvent(Server s, Client c);
+      // public void serverEvent(me.plopez.survivalgame.network.Server s, me.plopez.survivalgame.network.Client c);
       // which is called when a new guy connects
       try {
         serverEventMethod =
@@ -316,7 +316,7 @@ public static class Server implements Runnable {
         }
       } catch (SocketException e) {
         //thrown when server.close() is called and server is waiting on accept
-        System.err.println("Server SocketException: " + e.getMessage());
+        System.err.println("me.plopez.survivalgame.network.Server SocketException: " + e.getMessage());
         thread = null;
       } catch (IOException e) {
         //errorMessage("run", e);
@@ -331,7 +331,7 @@ public static class Server implements Runnable {
    * ( begin auto-generated from Server_write.xml )
    * 
    * Writes a value to all the connected clients. It sends bytes out from the 
-   * Server object.
+   * me.plopez.survivalgame.network.Server object.
    * 
    * ( end auto-generated )
    * @webref server
