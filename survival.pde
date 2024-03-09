@@ -1,4 +1,3 @@
-import processing.net.*;
 SeedManager seedManager = new SeedManager();
 
 Debug debug = new Debug();
@@ -24,7 +23,7 @@ void setup() {
     log.info("Server started at port " + server.port);
   }
   
-  client = new GameClient(this, "127.0.0.0", 5000);
+  client = new GameClient(this, "127.0.0.1", 5000);
   log.info("Connected to server!");
   
   log.info("World seed: " + seedManager.seed);

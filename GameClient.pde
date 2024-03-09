@@ -9,11 +9,11 @@ class GameClient extends Client {
     super(parent, adress, port);
     
     try {
-      while (available() < 4);
-      ConnectPacket connectPacket = new ConnectPacket(readBytes(ConnectPacket.size));
+      ConnectPacket connectPacket = new ConnectPacket(input);
       seedManager.setSeed(connectPacket.seed);
     } catch (IOException e) {
       log.error(e);
+      e.printStackTrace();
     }
   }
   

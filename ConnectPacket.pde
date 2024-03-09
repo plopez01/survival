@@ -1,14 +1,14 @@
 class ConnectPacket extends NetworkPacket {
   int seed;
-  final static int size = 4;
+  static final int size = NetworkPacket.size + 4;
 
   ConnectPacket(int seed) {
     super(PacketType.CONNECT);
     this.seed = seed;
   }
 
-  ConnectPacket(byte[] data) throws IOException {
-    super(data);
+  ConnectPacket(InputStream is) throws IOException {
+    super(is);
   }
 
   void readFrom(ObjectInputStream stream) throws IOException {

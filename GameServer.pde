@@ -19,9 +19,11 @@ void serverEvent(Server someServer, Client client) {
   
   try {
     var packet = new ConnectPacket(server.seed);
+    
     server.write(packet.serialize());
   
   } catch (IOException e) {
     log.error(e);
+    e.printStackTrace();
   }
 }

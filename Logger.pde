@@ -14,6 +14,7 @@ class Logger {
   void debug(Object msg){
     if (LOGGING_LEVEL.DEBUG.compareTo(level) > 0) return;
     println(header + "[DEBUG] " + msg);
+    //new Exception().printStackTrace();
   }
   
   void info(Object msg){
