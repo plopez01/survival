@@ -19,13 +19,13 @@ public class Survival extends PApplet {
     Debug debug = new Debug(this);
     //TODO migrate to static class
     public SeedManager seedManager = new SeedManager(this);
-    Player myPlayer = new Player(this,"Pau", 10000, color(random(255), random(255), random(255)));
+    Player myPlayer = new Player(this, "Pau", 10000, color(random(255), random(255), random(255)));
 
     boolean host = true;
     GameServer server;
     GameClient client;
 
-    public void settings(){
+    public void settings() {
         size(640, 480);
     }
 
@@ -62,22 +62,23 @@ public class Survival extends PApplet {
     }
 
     PVector holdOrigin = new PVector();
+
     public void mouseWheel(MouseEvent event) {
         client.camera.updateZoom(-event.getCount());
     }
 
-    public void mousePressed(){
+    public void mousePressed() {
         holdOrigin = new PVector(mouseX, mouseY);
     }
 
-    public void mouseReleased(){
+    public void mouseReleased() {
     }
 
-    public void mouseClicked(){
+    public void mouseClicked() {
         //player.commandMove(camera.getRelativeWorldMouse(mouse));
     }
 
-    public void mouseDragged(){
+    public void mouseDragged() {
         PVector mousePos = new PVector(mouseX, mouseY);
 
         PVector displacement = mousePos.sub(holdOrigin);
@@ -101,7 +102,7 @@ public class Survival extends PApplet {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         PApplet.runSketch(new String[]{"Survival"}, new Survival());
     }
 }
