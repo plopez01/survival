@@ -86,22 +86,6 @@ public class Survival extends PApplet {
         holdOrigin = new PVector(mouseX, mouseY);
     }
 
-    public void serverEvent(Server someServer, Client client) {
-        GameServer server = (GameServer) someServer;
-
-        server.log.info("We have a new client: " + client.ip());
-
-        try {
-            var packet = new ServerHandshake(server.getSeed());
-
-            server.write(packet.serialize());
-
-        } catch (IOException e) {
-            server.log.error(e);
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
         PApplet.runSketch(new String[]{"Survival"}, new Survival());
     }

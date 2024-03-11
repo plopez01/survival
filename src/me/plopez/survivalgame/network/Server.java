@@ -26,7 +26,6 @@ package me.plopez.survivalgame.network;/* -*- mode: java; c-basic-offset: 2; ind
 import processing.core.*;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
 
 
@@ -47,9 +46,8 @@ import java.net.*;
  * @brief The server class is used to create server objects which send and receives data to and from its associated clients (other programs connected to it).
  * @instanceName server    any variable of type me.plopez.survivalgame.network.Server
  */
-public class Server implements Runnable {
+public abstract class Server implements Runnable {
     PApplet parent;
-    Method serverEventMethod;
 
     volatile Thread thread;
     ServerSocket server;
@@ -95,16 +93,6 @@ public class Server implements Runnable {
             thread.start();
 
             parent.registerMethod("dispose", this);
-
-            // reflection to check whether host applet has a call for
-            // public void serverEvent(me.plopez.survivalgame.network.Server s, me.plopez.survivalgame.network.Client c);
-            // which is called when a new guy connects
-            try {
-                serverEventMethod =
-                        parent.getClass().getMethod("serverEvent", Server.class, Client.class);
-            } catch (Exception e) {
-                // no such method, or an error.. which is fine, just ignore
-            }
 
         } catch (IOException e) {
             //e.printStackTrace();
@@ -308,20 +296,7 @@ public class Server implements Runnable {
                 Client client = new Client(parent, socket);
                 synchronized (clientsLock) {
                     addClient(client);
-                    if (serverEventMethod != null) {
-                        try {
-                            serverEventMethod.invoke(parent, this, client);
-                        } catch (Exception e) {
-                            System.err.println("Disabling serverEvent() for port " + port);
-                            Throwable cause = e;
-                            // unwrap the exception if it came from the user code
-                            if (e instanceof InvocationTargetException && e.getCause() != null) {
-                                cause = e.getCause();
-                            }
-                            cause.printStackTrace();
-                            serverEventMethod = null;
-                        }
-                    }
+                    onClientConnect(this, client);
                 }
             } catch (SocketException e) {
                 //thrown when server.close() is called and server is waiting on accept
@@ -391,4 +366,6 @@ public class Server implements Runnable {
             }
         }
     }
+
+    public abstract void onClientConnect(Server someServer, Client client);
 }
