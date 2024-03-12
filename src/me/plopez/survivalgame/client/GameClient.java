@@ -21,7 +21,7 @@ public class GameClient extends Client {
     public Camera camera;
     Renderer renderer;
 
-    public GameClient(PApplet parent, String address, int port) {
+    public GameClient(PApplet parent, String address, int port) throws IOException {
         super(parent, address, port);
 
         terrain = new Terrain(parent, 4, 5000, 0.5f, 5, 5);

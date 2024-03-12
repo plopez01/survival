@@ -22,7 +22,7 @@ public class Logger {
         this.header = header;
     }
 
-    void debug(Object msg) {
+    public void debug(Object msg) {
         if (LoggingLevel.DEBUG.compareTo(level) > 0) return;
         System.out.println(header + GREEN + "[DEBUG] " + msg + RESET);
         //new Exception().printStackTrace();

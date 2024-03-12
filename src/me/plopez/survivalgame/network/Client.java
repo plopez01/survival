@@ -49,9 +49,6 @@ public class Client implements Runnable {
     protected static final int MAX_BUFFER_SIZE = 1 << 27; // 128 MB
 
     PApplet parent;
-    Method clientEventMethod;
-    Method disconnectEventMethod;
-
     volatile Thread thread;
     Socket socket;
     int port;
@@ -74,43 +71,21 @@ public class Client implements Runnable {
      * @param host   address of the server
      * @param port   port to read/write from on the server
      */
-    public Client(PApplet parent, String host, int port) {
+    public Client(PApplet parent, String host, int port) throws IOException {
         this.parent = parent;
         this.host = host;
         this.port = port;
 
-        try {
-            socket = new Socket(this.host, this.port);
-            input = socket.getInputStream();
-            output = socket.getOutputStream();
+        socket = new Socket(this.host, this.port);
+        input = socket.getInputStream();
+        output = socket.getOutputStream();
 
-            thread = new Thread(this);
-            //thread.start();
+        thread = new Thread(this);
+        //thread.start();
 
-            parent.registerMethod("dispose", this);
-            disposeRegistered = true;
+        parent.registerMethod("dispose", this);
+        disposeRegistered = true;
 
-            // reflection to check whether host sketch has a call for
-            // public void clientEvent(processing.net.me.plopez.survivalgame.network.Client)
-            // which would be called each time an event comes in
-            try {
-                clientEventMethod =
-                        parent.getClass().getMethod("clientEvent", Client.class);
-            } catch (Exception e) {
-                // no such method, or an error.. which is fine, just ignore
-            }
-            // do the same for disconnectEvent(me.plopez.survivalgame.network.Client c);
-            try {
-                disconnectEventMethod =
-                        parent.getClass().getMethod("disconnectEvent", Client.class);
-            } catch (Exception e) {
-                // no such method, or an error.. which is fine, just ignore
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            dispose();
-        }
     }
 
 
@@ -127,23 +102,6 @@ public class Client implements Runnable {
 
         thread = new Thread(this);
         //thread.start();
-
-        // reflection to check whether host sketch has a call for
-        // public void clientEvent(processing.net.me.plopez.survivalgame.network.Client)
-        // which would be called each time an event comes in
-        try {
-            clientEventMethod =
-                    parent.getClass().getMethod("clientEvent", Client.class);
-        } catch (Exception e) {
-            // no such method, or an error.. which is fine, just ignore
-        }
-        // do the same for disconnectEvent(me.plopez.survivalgame.network.Client c);
-        try {
-            disconnectEventMethod =
-                    parent.getClass().getMethod("disconnectEvent", Client.class);
-        } catch (Exception e) {
-            // no such method, or an error.. which is fine, just ignore
-        }
     }
 
 
@@ -160,18 +118,8 @@ public class Client implements Runnable {
      * @usage application
      */
     public void stop() {
-        if (disconnectEventMethod != null && thread != null) {
-            try {
-                disconnectEventMethod.invoke(parent, this);
-            } catch (Exception e) {
-                Throwable cause = e;
-                // unwrap the exception if it came from the user code
-                if (e instanceof InvocationTargetException && e.getCause() != null) {
-                    cause = e.getCause();
-                }
-                cause.printStackTrace();
-                disconnectEventMethod = null;
-            }
+        if (thread != null) {
+            onDisconect();
         }
         if (disposeRegistered) {
             parent.unregisterMethod("dispose", this);
@@ -179,7 +127,6 @@ public class Client implements Runnable {
         }
         dispose();
     }
-
 
     /**
      * Disconnect from the server: internal use only.
@@ -284,20 +231,7 @@ public class Client implements Runnable {
                     }
 
                     // now post an event
-                    if (clientEventMethod != null) {
-                        try {
-                            clientEventMethod.invoke(parent, this);
-                        } catch (Exception e) {
-                            System.err.println("error, disabling clientEvent() for " + host);
-                            Throwable cause = e;
-                            // unwrap the exception if it came from the user code
-                            if (e instanceof InvocationTargetException && e.getCause() != null) {
-                                cause = e.getCause();
-                            }
-                            cause.printStackTrace();
-                            clientEventMethod = null;
-                        }
-                    }
+                    onServerMessage();
                 }
             } catch (IOException e) {
                 //errorMessage("run", e);
@@ -306,6 +240,8 @@ public class Client implements Runnable {
         }
     }
 
+    protected void onServerMessage() {}
+    protected void onDisconect() {}
 
     /**
      * ( begin auto-generated from Client_active.xml )

@@ -30,18 +30,14 @@ public class GameServer extends Server {
     }
 
     @Override
-    public void onClientConnect(Server someServer, Client client) {
-        GameServer server = (GameServer) someServer;
-
-        server.log.info("We have a new client: " + client.ip());
-
+    public void onClientConnect(Client client) {
+        super.onClientConnect(client);
+        log.info("We have a new client: " + client.ip());
         try {
-            var packet = new ServerHandshake(server.getSeed());
-
-            server.write(packet.serialize());
-
+            var packet = new ServerHandshake(getSeed());
+            write(packet.serialize());
         } catch (IOException e) {
-            server.log.error(e);
+            log.error(e);
             e.printStackTrace();
         }
     }

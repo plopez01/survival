@@ -296,7 +296,7 @@ public abstract class Server implements Runnable {
                 Client client = new Client(parent, socket);
                 synchronized (clientsLock) {
                     addClient(client);
-                    onClientConnect(this, client);
+                    onClientConnect(client);
                 }
             } catch (SocketException e) {
                 //thrown when server.close() is called and server is waiting on accept
@@ -367,5 +367,5 @@ public abstract class Server implements Runnable {
         }
     }
 
-    public abstract void onClientConnect(Server someServer, Client client);
+    protected void onClientConnect(Client client){}
 }
