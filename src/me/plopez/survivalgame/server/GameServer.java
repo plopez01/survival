@@ -4,6 +4,7 @@ import me.plopez.survivalgame.log.Logger;
 import me.plopez.survivalgame.log.LoggingLevel;
 import me.plopez.survivalgame.network.Client;
 import me.plopez.survivalgame.network.Server;
+import me.plopez.survivalgame.network.packet.NetworkPacket;
 import me.plopez.survivalgame.network.packet.ServerHandshake;
 import processing.core.PApplet;
 
@@ -27,6 +28,13 @@ public class GameServer extends Server {
 
     public int getPort() {
         return port;
+    }
+
+    public void tick() {
+        Client client = available();
+        /*while (client != null) {
+
+        }*/
     }
 
     @Override

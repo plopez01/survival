@@ -13,12 +13,9 @@ public class ServerHandshake extends NetworkPacket {
         this.seed = seed;
     }
 
-    public ServerHandshake(InputStream is) throws IOException {
-        super(is);
-    }
-
-    protected void readFrom(ObjectInputStream stream) throws IOException {
-        seed = stream.readInt();
+    public ServerHandshake(ObjectInputStream ois) throws IOException {
+        super(PacketType.SERVER_HANDSHAKE);
+        seed = ois.readInt();
     }
 
     protected void writeTo(ObjectOutputStream stream) throws IOException {

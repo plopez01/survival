@@ -65,6 +65,8 @@ public class Survival extends PApplet {
     }
 
     public void draw() {
+        if (server != null) server.tick();
+
         client.tick();
 
         debug.add("FPS", frameRate);

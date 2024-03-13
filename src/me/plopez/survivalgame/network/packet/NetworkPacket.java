@@ -9,15 +9,7 @@ public abstract class NetworkPacket {
         this.type = type;
     }
 
-    protected NetworkPacket(InputStream is) throws IOException {
-        ObjectInputStream ois = new ObjectInputStream(is);
-        type = PacketType.values()[ois.readByte()];
-        readFrom(ois);
-    }
-
     protected abstract void writeTo(ObjectOutputStream stream) throws IOException;
-
-    protected abstract void readFrom(ObjectInputStream stream) throws IOException;
 
     public byte[] serialize() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
