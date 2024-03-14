@@ -22,4 +22,7 @@ public abstract class NetworkPacket {
         return baos.toByteArray();
     }
 
+    public PacketType getType() {
+        return type;
+    }
 }

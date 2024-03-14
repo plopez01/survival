@@ -1,15 +1,13 @@
 package me.plopez.survivalgame.entities;
 
-import me.plopez.survivalgame.entities.Commandable;
 import me.plopez.survivalgame.objects.WorldObject;
 import me.plopez.survivalgame.rendering.Renderable;
-import processing.core.PApplet;
 import processing.core.PVector;
 
+import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PConstants.*;
 
 public class Player extends WorldObject implements Renderable, Commandable {
-    PApplet sketch;
     String name;
     float speed;
     int c;
@@ -21,9 +19,7 @@ public class Player extends WorldObject implements Renderable, Commandable {
 
     PVector startPos = transform;
 
-    public Player(PApplet sketch, String name, float speed, int c) {
-        this.sketch = sketch;
-
+    public Player(String name, float speed, int c) {
         this.name = name;
         this.speed = speed;
         this.c = c;
@@ -63,5 +59,9 @@ public class Player extends WorldObject implements Renderable, Commandable {
     }
 
     public void renderUnscaled() {
+    }
+
+    public String getName() {
+        return name;
     }
 }

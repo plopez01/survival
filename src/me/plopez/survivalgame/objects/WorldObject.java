@@ -2,7 +2,9 @@ package me.plopez.survivalgame.objects;
 
 import processing.core.PVector;
 
-public abstract class WorldObject {
+import java.io.Serializable;
+
+public abstract class WorldObject implements Serializable {
     public PVector transform = new PVector();
 
     public WorldObject() {

@@ -6,9 +6,6 @@ import me.plopez.survivalgame.client.SeedManager;
 import me.plopez.survivalgame.entities.Player;
 import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
-import me.plopez.survivalgame.network.Client;
-import me.plopez.survivalgame.network.Server;
-import me.plopez.survivalgame.network.packet.ServerHandshake;
 import me.plopez.survivalgame.server.GameServer;
 import me.plopez.survivalgame.util.StartupOptions;
 import processing.core.*;
@@ -21,8 +18,6 @@ public class Survival extends PApplet {
     Debug debug = new Debug(this);
     //TODO migrate to static class
     public SeedManager seedManager = new SeedManager(this);
-    Player myPlayer = new Player(this, "Pau", 10000, color(random(255), random(255), random(255)));
-
     StartupOptions startupOptions;
     GameServer server;
     GameClient client;
@@ -33,14 +28,17 @@ public class Survival extends PApplet {
 
     public void settings() {
         size(640, 480);
+        //fullScreen();
     }
 
     public void setup() {
+        Globals.sketch = this;
+
         if (startupOptions.xScreen() >= 0 && startupOptions.yScreen() >= 0)
             windowMove(startupOptions.xScreen(), startupOptions.yScreen());
 
         System.out.println("Starting game.");
-        //fullScreen();
+
         background(0);
 
         if (startupOptions.isHost()) {
@@ -97,6 +95,7 @@ public class Survival extends PApplet {
 
     public void mouseClicked() {
         //player.commandMove(camera.getRelativeWorldMouse(mouse));
+        client.getMyPlayer().commandMove(client.getCamera().getRelativeWorldMouse());
     }
 
     public void mouseDragged() {

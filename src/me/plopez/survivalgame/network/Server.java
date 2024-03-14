@@ -27,6 +27,8 @@ import processing.core.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 /**
@@ -217,33 +219,30 @@ public abstract class Server implements Runnable {
      * @webref server
      * @usage application
      */
-    public Client available() {
-        synchronized (clientsLock) {
-            int index = lastAvailable + 1;
-            if (index >= clientCount) index = 0;
+    public Client available() throws IOException {
+        int index = lastAvailable + 1;
+        if (index >= clientCount) index = 0;
 
-            for (int i = 0; i < clientCount; i++) {
-                int which = (index + i) % clientCount;
-                Client client = clients[which];
-                //Check for valid client
-                if (!client.active()) {
-                    removeIndex(which);  //Remove dead client
-                    i--;                 //Don't skip the next client
-                    //If the client has data make sure lastAvailable
-                    //doesn't end up skipping the next client
-                    which--;
-                    //fall through to allow data from dead clients
-                    //to be retreived.
-                }
-                if (client.available() > 0) {
-                    lastAvailable = which;
-                    return client;
-                }
+        for (int i = 0; i < clientCount; i++) {
+            int which = (index + i) % clientCount;
+            Client client = clients[which];
+            //Check for valid client
+            if (!client.active()) {
+                removeIndex(which);  //Remove dead client
+                i--;                 //Don't skip the next client
+                //If the client has data make sure lastAvailable
+                //doesn't end up skipping the next client
+                which--;
+                //fall through to allow data from dead clients
+                //to be retreived.
+            }
+            if (client.input.available() > 0) {
+                lastAvailable = which;
+                return client;
             }
         }
         return null;
     }
-
 
     /**
      * ( begin auto-generated from Server_stop.xml )

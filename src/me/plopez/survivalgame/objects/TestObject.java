@@ -4,14 +4,9 @@ import me.plopez.survivalgame.rendering.Renderable;
 import processing.core.PApplet;
 
 import static processing.core.PConstants.*;
+import static me.plopez.survivalgame.Globals.sketch;
 
 public class TestObject extends WorldObject implements Renderable {
-    PApplet sketch;
-
-    public TestObject(PApplet sketch) {
-        this.sketch = sketch;
-    }
-
     public void render() {
         sketch.rectMode(CENTER);
         sketch.fill(255, 0, 0);

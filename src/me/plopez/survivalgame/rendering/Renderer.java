@@ -7,6 +7,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Renderer implements Renderable {
     PApplet sketch;
@@ -20,8 +21,11 @@ public class Renderer implements Renderable {
         this.globalScale = globalScale;
     }
 
-    void add(Renderable renderable) {
+    public void add(Renderable renderable) {
         renderables.add(renderable);
+    }
+    public void add(List<Renderable> newList) {
+        renderables.addAll(newList);
     }
 
     public void render() {

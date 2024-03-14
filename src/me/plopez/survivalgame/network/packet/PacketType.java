@@ -1,12 +1,10 @@
 package me.plopez.survivalgame.network.packet;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.function.Function;
 
 public enum PacketType {
     SERVER_HANDSHAKE(ServerHandshake::new),
-    CLIENT_HANDSHAKE(null);
+    CLIENT_CONNECT(ClientConnect::new);
 
     final Translator translator;
 
@@ -14,8 +12,8 @@ public enum PacketType {
         this.translator = translator;
     }
 
-    public NetworkPacket makePacket(ObjectInputStream ois) throws IOException {
-        return translator.translate(ois);
+    public NetworkPacket makePacket(PacketInputStream pis) throws IOException {
+        return translator.translate(pis);
     }
 
     public static PacketType getType(int index){
@@ -23,6 +21,6 @@ public enum PacketType {
     }
 
     interface Translator {
-        NetworkPacket translate(ObjectInputStream ois) throws IOException;
+        NetworkPacket translate(PacketInputStream pis) throws IOException;
     }
 }

@@ -229,9 +229,6 @@ public class Client implements Runnable {
                         System.arraycopy(readBuffer, 0, buffer, bufferLast, readCount);
                         bufferLast += readCount;
                     }
-
-                    // now post an event
-                    onServerMessage();
                 }
             } catch (IOException e) {
                 //errorMessage("run", e);
@@ -240,7 +237,6 @@ public class Client implements Runnable {
         }
     }
 
-    protected void onServerMessage() {}
     protected void onDisconect() {}
 
     /**
@@ -277,26 +273,6 @@ public class Client implements Runnable {
         }
         return null;
     }
-
-
-    /**
-     * ( begin auto-generated from Client_available.xml )
-     * <p>
-     * Returns the number of bytes available. When any client has bytes
-     * available from the server, it returns the number of bytes.
-     * <p>
-     * ( end auto-generated )
-     *
-     * @webref client:client
-     * @usage application
-     * @brief Returns the number of bytes in the buffer waiting to be read
-     */
-    public int available() {
-        synchronized (bufferLock) {
-            return (bufferLast - bufferIndex);
-        }
-    }
-
 
     /**
      * ( begin auto-generated from Client_clear.xml )
