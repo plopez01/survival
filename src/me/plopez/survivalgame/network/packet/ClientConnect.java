@@ -15,7 +15,7 @@ public class ClientConnect extends NetworkPacket {
 
     public ClientConnect(PacketInputStream pis) throws IOException {
         super(PacketType.CLIENT_CONNECT);
-        player = (Player) pis.readPacket();
+        player = (Player) pis.readPackedObject();
     }
 
     @Override

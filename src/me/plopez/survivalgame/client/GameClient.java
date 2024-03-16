@@ -2,6 +2,7 @@ package me.plopez.survivalgame.client;
 
 import me.plopez.survivalgame.Survival;
 import me.plopez.survivalgame.entities.Player;
+import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.log.Logger;
 import me.plopez.survivalgame.log.LoggingLevel;
 import me.plopez.survivalgame.network.Client;
@@ -16,7 +17,9 @@ import me.plopez.survivalgame.util.RangeConstrain;
 import processing.core.PApplet;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static me.plopez.survivalgame.Globals.sketch;
 
@@ -27,8 +30,8 @@ public class GameClient extends Client {
     public Camera camera;
     Renderer renderer;
     List<WorldObject> worldObjects;
-
-    Player myPlayer = new Player("Pau", 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
+    Map<String, Player> players = new HashMap<>();
+    Player myPlayer = new Player("Pau" + sketch.random(10000), 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
 
 
     public GameClient(PApplet parent, String address, int port) throws IOException {
@@ -38,8 +41,7 @@ public class GameClient extends Client {
         camera = new Camera(parent, 16, 20, new RangeConstrain(10, 80), 1, 4);
         renderer = new Renderer(parent, camera, 0.01f);
 
-        renderer.add(myPlayer);
-
+        // Download world
         try {
             // Server handshake
             PacketInputStream is = new PacketInputStream(input);
@@ -47,10 +49,11 @@ public class GameClient extends Client {
             ServerHandshake sHandshake = (ServerHandshake) PacketType.getType(is.readByte()).makePacket(is);
             ((Survival) parent).seedManager.setSeed(sHandshake.seed);
             worldObjects = sHandshake.worldObjects;
-            log.debug("Handled handshake");
+            log.debug("Handled server handshake.");
 
             for (WorldObject worldObject : worldObjects) {
                 if (worldObject instanceof Renderable r) renderer.add(r);
+                if (worldObject instanceof Player p) players.put(p.getName(), p);
             }
 
             ClientConnect cHandshake = new ClientConnect(myPlayer);
@@ -81,19 +84,30 @@ public class GameClient extends Client {
                 case CLIENT_CONNECT -> {
                     ClientConnect clientConnect = (ClientConnect) inPacket;
 
-                    // If it is ourselves then ignore the message
-                    if (!clientConnect.player.getName().equals(myPlayer.getName()))
-                    {
-                        worldObjects.add(clientConnect.player);
-                        renderer.add(clientConnect.player);
-                    } else log.debug("Ignoring selfconnect packet");
-
+                    try {
+                        registerPlayer(clientConnect.player);
+                    } catch (DuplicatePlayerException e) {
+                        log.warn("Client tried to register an already existing player.");
+                    }
+                }
+                case MOVE_COMMAND -> {
+                    MoveCommand moveCommand = (MoveCommand) inPacket;
+                    Player player = players.get(moveCommand.entityID);
+                    player.commandMove(moveCommand.target);
                 }
                 default -> throw new IllegalStateException("Unexpected value: " + inPacket);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void registerPlayer(Player player) throws DuplicatePlayerException {
+        if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
+        log.debug("Registering player " + player.getName());
+        worldObjects.add(player);
+        players.put(player.getName(), player);
+        renderer.add(player);
     }
 
     public Player getMyPlayer() {

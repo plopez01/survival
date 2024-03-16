@@ -1,7 +1,5 @@
 package me.plopez.survivalgame.network.packet;
 
-import me.plopez.survivalgame.network.packet.NetworkPacket;
-import me.plopez.survivalgame.network.packet.PacketType;
 import me.plopez.survivalgame.objects.WorldObject;
 import java.util.List;
 import java.io.*;
@@ -20,7 +18,7 @@ public class ServerHandshake extends NetworkPacket {
         super(PacketType.SERVER_HANDSHAKE);
         seed = ois.readInt();
         //noinspection unchecked
-        worldObjects = (List<WorldObject>) ois.readPacket();
+        worldObjects = (List<WorldObject>) ois.readPackedObject();
     }
 
     /** ----------------------------------------------------------------------

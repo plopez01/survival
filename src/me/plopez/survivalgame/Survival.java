@@ -6,6 +6,7 @@ import me.plopez.survivalgame.client.SeedManager;
 import me.plopez.survivalgame.entities.Player;
 import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
+import me.plopez.survivalgame.network.packet.MoveCommand;
 import me.plopez.survivalgame.server.GameServer;
 import me.plopez.survivalgame.util.StartupOptions;
 import processing.core.*;
@@ -95,7 +96,14 @@ public class Survival extends PApplet {
 
     public void mouseClicked() {
         //player.commandMove(camera.getRelativeWorldMouse(mouse));
-        client.getMyPlayer().commandMove(client.getCamera().getRelativeWorldMouse());
+        PVector target = client.getCamera().getRelativeWorldMouse();
+        //client.getMyPlayer().commandMove(target);
+        MoveCommand cmd = new MoveCommand(client.getMyPlayer().getName(), target);
+        try {
+            client.output.write(cmd.serialize());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void mouseDragged() {

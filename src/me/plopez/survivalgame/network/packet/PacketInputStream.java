@@ -9,7 +9,7 @@ public class PacketInputStream extends ObjectInputStream {
         super(in);
     }
 
-    public Object readPacket() throws IOException{
+    public Object readPackedObject() throws IOException{
         try {
             return readObject();
         } catch (ClassNotFoundException e) {

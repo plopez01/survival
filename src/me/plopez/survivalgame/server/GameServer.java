@@ -1,7 +1,7 @@
 package me.plopez.survivalgame.server;
 
 import me.plopez.survivalgame.entities.Player;
-import me.plopez.survivalgame.exception.PlayerExistsException;
+import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.log.Logger;
 import me.plopez.survivalgame.log.LoggingLevel;
 import me.plopez.survivalgame.network.Client;
@@ -11,7 +11,6 @@ import me.plopez.survivalgame.objects.WorldObject;
 import processing.core.PApplet;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.*;
 
 public class GameServer extends Server {
@@ -48,19 +47,18 @@ public class GameServer extends Server {
 
                 switch (inPacket.getType()){
                     case CLIENT_CONNECT -> {
-                        for (Client c : clients) {
-                            if (c == null) continue;
-                            c.write(inPacket.serialize());
-
-                            ClientConnect clientConnect = (ClientConnect) inPacket;
-                            try {
-                                registerPlayer(clientConnect.player);
-                            } catch (PlayerExistsException e) {
-                                log.warn("Client (" + client.ip() + ") tried to connect with name "
-                                                + clientConnect.player.getName() +
-                                                " but another player with the same name already exists.");
-                            }
+                        ClientConnect clientConnect = (ClientConnect) inPacket;
+                        try {
+                            registerPlayer(clientConnect.player);
+                            broadcast(inPacket);
+                        } catch (DuplicatePlayerException e) {
+                            log.warn("Client (" + client.ip() + ") tried to connect with name "
+                                    + clientConnect.player.getName() +
+                                    " but another player with the same name already exists.");
                         }
+                    }
+                    case MOVE_COMMAND -> {
+                        broadcast(inPacket);
                     }
                     default -> throw new IllegalStateException("Unexpected value: " + inPacket);
                 }
@@ -72,8 +70,22 @@ public class GameServer extends Server {
         }
     }
 
-    private void registerPlayer(Player player) throws PlayerExistsException {
-        if (players.containsKey(player.getName())) throw new PlayerExistsException();
+    private void broadcast(NetworkPacket packet) throws IOException {
+        for (Client c : clients) {
+            if (c == null) continue;
+            c.write(packet.serialize());
+        }
+    }
+
+    private void echoToOthers(NetworkPacket packet, Client from) throws IOException {
+        for (Client c : clients) {
+            if (c == null || c == from) continue;
+            c.write(packet.serialize());
+        }
+    }
+
+    public void registerPlayer(Player player) throws DuplicatePlayerException {
+        if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
         worldObjects.add(player);
         players.put(player.getName(), player);
     }
