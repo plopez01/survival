@@ -27,6 +27,9 @@ public class Renderer implements Renderable {
     public void add(List<Renderable> newList) {
         renderables.addAll(newList);
     }
+    public void remove(Renderable renderable) {
+        renderables.remove(renderable);
+    }
 
     public void render() {
         for (Renderable renderable : renderables) {

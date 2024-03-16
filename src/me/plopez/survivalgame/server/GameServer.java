@@ -60,6 +60,9 @@ public class GameServer extends Server {
                     case MOVE_COMMAND -> {
                         broadcast(inPacket);
                     }
+                    case CLIENT_DISCONNECT -> {
+                        echoToOthers(inPacket, client);
+                    }
                     default -> throw new IllegalStateException("Unexpected value: " + inPacket);
                 }
 
@@ -73,14 +76,14 @@ public class GameServer extends Server {
     private void broadcast(NetworkPacket packet) throws IOException {
         for (Client c : clients) {
             if (c == null) continue;
-            c.write(packet.serialize());
+            c.output.write(packet.serialize());
         }
     }
 
     private void echoToOthers(NetworkPacket packet, Client from) throws IOException {
         for (Client c : clients) {
             if (c == null || c == from) continue;
-            c.write(packet.serialize());
+            c.output.write(packet.serialize());
         }
     }
 
@@ -101,6 +104,11 @@ public class GameServer extends Server {
             log.error(e);
             e.printStackTrace();
         }
+    }
+    @Override
+    public void onClientDisconnect(Client client) {
+        super.onClientDisconnect(client);
+        log.info("A client has disconnected");
     }
 }
 

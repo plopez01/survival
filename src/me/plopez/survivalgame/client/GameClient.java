@@ -95,6 +95,12 @@ public class GameClient extends Client {
                     Player player = players.get(moveCommand.entityID);
                     player.commandMove(moveCommand.target);
                 }
+                case CLIENT_DISCONNECT -> {
+                    ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
+
+                    Player localPlayer = players.get(clientDisconnect.player.getName());
+                    removePlayer(localPlayer);
+                }
                 default -> throw new IllegalStateException("Unexpected value: " + inPacket);
             }
         } catch (IOException e) {
@@ -110,11 +116,32 @@ public class GameClient extends Client {
         renderer.add(player);
     }
 
+    public void removePlayer(Player player){
+        renderer.remove(player);
+        worldObjects.remove(player);
+        players.remove(player.getName());
+        log.debug("Removing player " + player.getName());
+    }
+
     public Player getMyPlayer() {
         return myPlayer;
     }
 
     public Camera getCamera() {
         return camera;
+    }
+
+    @Override
+    protected void onDisconnect(){
+        super.onDisconnect();
+        log.info("Exiting...");
+
+        ClientDisconnect disconnectPacket = new ClientDisconnect(myPlayer);
+
+        try {
+            output.write(disconnectPacket.serialize());
+        } catch (IOException e) {
+            log.warn("Failed to notify disconnection to server.");
+        }
     }
 }

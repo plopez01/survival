@@ -56,8 +56,6 @@ public class Survival extends PApplet {
                 delay(1000);
             }
         }
-        client.log.debug(client);
-
         client.log.info("Connected to server!");
 
         client.log.info("World seed: " + seedManager.getSeed());

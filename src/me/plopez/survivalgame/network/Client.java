@@ -135,6 +135,7 @@ public class Client implements Runnable {
      * use stop() instead from within your own applets.
      */
     public void dispose() {
+        onDisconnect();
         thread = null;
         try {
             if (input != null) {
@@ -164,6 +165,7 @@ public class Client implements Runnable {
         }
     }
 
+    protected void onDisconnect(){}
 
     @Override
     public void run() {
@@ -582,66 +584,7 @@ public class Client implements Runnable {
     }
 
 
-    /**
-     * ( begin auto-generated from Client_write.xml )
-     * <p>
-     * Writes data to a server specified when constructing the client.
-     * <p>
-     * ( end auto-generated )
-     *
-     * @param data data to write
-     * @webref client:client
-     * @usage application
-     * @brief Writes bytes, chars, ints, bytes[], Strings
-     */
-    public void write(int data) {  // will also cover char
-        try {
-            output.write(data & 0xff);  // for good measure do the &
-            output.flush();   // hmm, not sure if a good idea
 
-        } catch (Exception e) { // null pointer or serial port dead
-            //errorMessage("write", e);
-            //e.printStackTrace();
-            //dispose();
-            //disconnect(e);
-            e.printStackTrace();
-            stop();
-        }
-    }
-
-
-    public void write(byte data[]) {
-        try {
-            output.write(data);
-            output.flush();   // hmm, not sure if a good idea
-
-        } catch (Exception e) { // null pointer or serial port dead
-            //errorMessage("write", e);
-            //e.printStackTrace();
-
-            //disconnect(e);
-            e.printStackTrace();
-            stop();
-        }
-    }
-
-
-    /**
-     * <h3>Advanced</h3>
-     * Write a String to the output. Note that this doesn't account
-     * for Unicode (two bytes per char), nor will it send UTF8
-     * characters.. It assumes that you mean to send a byte buffer
-     * (most often the case for networking and serial i/o) and
-     * will only use the bottom 8 bits of each char in the string.
-     * (Meaning that internally it uses String.getBytes)
-     * <p>
-     * If you want to move Unicode data, you can first convert the
-     * String to a byte stream in the representation of your choice
-     * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
-     */
-    public void write(String data) {
-        write(data.getBytes());
-    }
 
 
     /**

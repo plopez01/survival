@@ -5,6 +5,7 @@ import java.io.IOException;
 public enum PacketType {
     SERVER_HANDSHAKE(ServerHandshake::new),
     CLIENT_CONNECT(ClientConnect::new),
+    CLIENT_DISCONNECT(ClientDisconnect::new),
     MOVE_COMMAND(MoveCommand::new);
 
     final Translator translator;

@@ -236,6 +236,11 @@ public abstract class Server implements Runnable {
                 //fall through to allow data from dead clients
                 //to be retreived.
             }
+            if (client.input == null) {
+                onClientDisconnect(client);
+                disconnect(client);
+                return null;
+            }
             if (client.input.available() > 0) {
                 lastAvailable = which;
                 return client;
@@ -310,4 +315,5 @@ public abstract class Server implements Runnable {
     }
 
     protected void onClientConnect(Client client){}
+    protected void onClientDisconnect(Client client){}
 }
