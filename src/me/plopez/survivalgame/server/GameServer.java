@@ -9,6 +9,7 @@ import me.plopez.survivalgame.network.Server;
 import me.plopez.survivalgame.network.packet.*;
 import me.plopez.survivalgame.objects.WorldObject;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import java.io.IOException;
 import java.util.*;
@@ -58,9 +59,21 @@ public class GameServer extends Server {
                         }
                     }
                     case MOVE_COMMAND -> {
+                        MoveCommand moveCommand = (MoveCommand) inPacket;
+
+                        Player player = players.get(moveCommand.entityID);
+                        player.transform.set(new PVector(-moveCommand.target.x, -moveCommand.target.y, player.transform.z));
+
                         broadcast(inPacket);
                     }
                     case CLIENT_DISCONNECT -> {
+                        ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
+
+                        Player localPlayer = players.get(clientDisconnect.player.getName());
+                        removePlayer(localPlayer);
+
+                        disconnect(client);
+
                         echoToOthers(inPacket, client);
                     }
                     default -> throw new IllegalStateException("Unexpected value: " + inPacket);
@@ -89,8 +102,15 @@ public class GameServer extends Server {
 
     public void registerPlayer(Player player) throws DuplicatePlayerException {
         if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
+        log.debug("Registering player " + player.getName());
         worldObjects.add(player);
         players.put(player.getName(), player);
+    }
+
+    public void removePlayer(Player player) {
+        log.debug("Removing player " + player.getName());
+        worldObjects.remove(player);
+        players.remove(player.getName());
     }
 
     @Override

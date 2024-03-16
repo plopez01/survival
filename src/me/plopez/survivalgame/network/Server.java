@@ -117,6 +117,7 @@ public abstract class Server implements Runnable {
      * @webref server:server
      */
     public void disconnect(Client client) {
+        onClientDisconnect(client);
         client.stop();
         synchronized (clientsLock) {
             int index = clientIndex(client);
@@ -237,7 +238,6 @@ public abstract class Server implements Runnable {
                 //to be retreived.
             }
             if (client.input == null) {
-                onClientDisconnect(client);
                 disconnect(client);
                 return null;
             }

@@ -58,7 +58,7 @@ public class GameClient extends Client {
 
             ClientConnect cHandshake = new ClientConnect(myPlayer);
             output.write(cHandshake.serialize());
-            log.debug("Seding connect message to server.");
+            log.debug("Sending connect message to server.");
         } catch (IOException e) {
             log.error(e);
             e.printStackTrace();
