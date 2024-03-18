@@ -7,6 +7,6 @@ public abstract class UIElement implements Renderable {
     PVector position;
     PVector size;
 
-    public final void render() {}
+    public void render() {}
     public final void renderText() {}
 }

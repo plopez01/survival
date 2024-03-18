@@ -34,13 +34,13 @@ public class GameClient extends Client {
     Map<String, Player> players = new HashMap<>();
     Player myPlayer;
 
-    public GameClient(PApplet parent, String address, int port, String playerName) throws IOException {
-        super(parent, address, port);
+    public GameClient(String address, int port, String playerName) throws IOException {
+        super(sketch, address, port);
 
         myPlayer = new Player(playerName, 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
 
-        terrain = new Terrain(parent, 4, 5000, 0.5f, 5, 5);
-        camera = new Camera(parent, 16, 20, new RangeConstrain(10, 80), 1, 4);
+        terrain = new Terrain(sketch, 4, 5000, 0.5f, 5, 5);
+        camera = new Camera(sketch, 16, 20, new RangeConstrain(10, 80), 1, 4);
         renderer = new CameraRenderer(0.01f, camera);
 
         // Download world
@@ -49,9 +49,10 @@ public class GameClient extends Client {
             PacketInputStream is = new PacketInputStream(input);
 
             ServerHandshake sHandshake = (ServerHandshake) PacketType.getType(is.readByte()).makePacket(is);
-            ((Survival) parent).seedManager.setSeed(sHandshake.seed);
+            ((Survival) sketch).seedManager.setSeed(sHandshake.seed);
             worldObjects = sHandshake.worldObjects;
             log.debug("Handled server handshake.");
+            log.info("World seed: " + sHandshake.seed);
 
             for (WorldObject worldObject : worldObjects) {
                 if (worldObject instanceof Renderable r) renderer.add(r);
@@ -145,5 +146,20 @@ public class GameClient extends Client {
         } catch (IOException e) {
             log.warn("Failed to notify disconnection to server.");
         }
+    }
+
+    public static GameClient connect(String address, int port, String playerName) {
+        GameClient client = null;
+        System.out.print("Connecting to server...");
+        while(client == null) {
+            System.out.print('.');
+            try {
+                client = new GameClient(address, port, playerName);
+            } catch (IOException e) {
+                sketch.delay(1000);
+            }
+        }
+        client.log.info("Connected to server!");
+        return client;
     }
 }

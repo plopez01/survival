@@ -7,6 +7,7 @@ import me.plopez.survivalgame.entities.Player;
 import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
 import me.plopez.survivalgame.network.packet.MoveCommand;
+import me.plopez.survivalgame.rendering.Renderer;
 import me.plopez.survivalgame.server.GameServer;
 import me.plopez.survivalgame.ui.UI;
 import me.plopez.survivalgame.util.StartupOptions;
@@ -23,6 +24,8 @@ public class Survival extends PApplet {
     StartupOptions startupOptions;
     GameServer server;
     GameClient client;
+
+    Renderer gameRenderer = new Renderer(1);
 
     Survival(StartupOptions startupOptions){
         this.startupOptions = startupOptions;
@@ -48,18 +51,8 @@ public class Survival extends PApplet {
             server.log.info("Server started at port " + server.getPort());
         }
 
-        System.out.print("Connecting to server...");
-        while(client == null) {
-            System.out.print('.');
-            try {
-                client = new GameClient(this, "127.0.0.1", 5000, "Pau");
-            } catch (IOException e) {
-                delay(1000);
-            }
-        }
-        client.log.info("Connected to server!");
-
-        client.log.info("World seed: " + seedManager.getSeed());
+        client = GameClient.connect("127.0.0.1", 5000, "Pau");
+        gameRenderer.add(UI.connectUI());
     }
 
     public void draw() {
@@ -78,6 +71,7 @@ public class Survival extends PApplet {
         debug.add("WorldMouse", client.camera.getRelativeWorldMouse());
         //debug.showPointer();
         debug.render();
+        gameRenderer.render();
     }
 
     PVector holdOrigin = new PVector();
