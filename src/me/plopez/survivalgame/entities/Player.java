@@ -58,9 +58,6 @@ public class Player extends WorldObject implements Renderable, Commandable {
         sketch.textAlign(CORNER);
     }
 
-    public void renderUnscaled() {
-    }
-
     public String getName() {
         return name;
     }

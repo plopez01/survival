@@ -8,6 +8,7 @@ import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
 import me.plopez.survivalgame.network.packet.MoveCommand;
 import me.plopez.survivalgame.server.GameServer;
+import me.plopez.survivalgame.ui.UI;
 import me.plopez.survivalgame.util.StartupOptions;
 import processing.core.*;
 import processing.event.MouseEvent;
@@ -51,7 +52,7 @@ public class Survival extends PApplet {
         while(client == null) {
             System.out.print('.');
             try {
-                client = new GameClient(this, "127.0.0.1", 5000);
+                client = new GameClient(this, "127.0.0.1", 5000, "Pau");
             } catch (IOException e) {
                 delay(1000);
             }

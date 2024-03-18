@@ -9,6 +9,7 @@ import me.plopez.survivalgame.network.Client;
 import me.plopez.survivalgame.network.packet.*;
 import me.plopez.survivalgame.objects.Camera;
 import me.plopez.survivalgame.objects.WorldObject;
+import me.plopez.survivalgame.rendering.CameraRenderer;
 import me.plopez.survivalgame.rendering.Renderable;
 import me.plopez.survivalgame.rendering.Renderer;
 import me.plopez.survivalgame.rendering.Terrain;
@@ -31,15 +32,16 @@ public class GameClient extends Client {
     Renderer renderer;
     List<WorldObject> worldObjects;
     Map<String, Player> players = new HashMap<>();
-    Player myPlayer = new Player("Pau" + sketch.random(10000), 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
+    Player myPlayer;
 
-
-    public GameClient(PApplet parent, String address, int port) throws IOException {
+    public GameClient(PApplet parent, String address, int port, String playerName) throws IOException {
         super(parent, address, port);
+
+        myPlayer = new Player(playerName, 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
 
         terrain = new Terrain(parent, 4, 5000, 0.5f, 5, 5);
         camera = new Camera(parent, 16, 20, new RangeConstrain(10, 80), 1, 4);
-        renderer = new Renderer(parent, camera, 0.01f);
+        renderer = new CameraRenderer(0.01f, camera);
 
         // Download world
         try {

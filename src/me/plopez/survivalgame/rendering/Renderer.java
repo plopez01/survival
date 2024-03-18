@@ -2,22 +2,18 @@ package me.plopez.survivalgame.rendering;
 
 import me.plopez.survivalgame.objects.Camera;
 import me.plopez.survivalgame.objects.WorldObject;
-import me.plopez.survivalgame.rendering.Renderable;
-import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.plopez.survivalgame.Globals.sketch;
+
 public class Renderer implements Renderable {
-    PApplet sketch;
-    Camera cam;
     ArrayList<Renderable> renderables = new ArrayList<>();
     float globalScale;
 
-    public Renderer(PApplet sketch, Camera cam, float globalScale) {
-        this.sketch = sketch;
-        this.cam = cam;
+    public Renderer(float globalScale) {
         this.globalScale = globalScale;
     }
 
@@ -31,42 +27,21 @@ public class Renderer implements Renderable {
         renderables.remove(renderable);
     }
 
+    protected void renderRenderable(Renderable renderable){
+        sketch.scale(globalScale);
+        renderable.render();
+        renderable.renderText();
+    }
+
     public void render() {
         for (Renderable renderable : renderables) {
-            if (renderable instanceof WorldObject) {
-                WorldObject worldObject = (WorldObject) renderable;
-
-                sketch.pushMatrix();
-
-                PVector screenSpace = cam.toRelativeScreenSpace(worldObject.transform);
-
-                sketch.strokeWeight(sketch.g.strokeWeight / screenSpace.z);
-                sketch.translate(screenSpace.x, screenSpace.y);
-
-                renderable.renderUnscaled();
-
-                sketch.pushMatrix();
-                sketch.scale(screenSpace.z * globalScale / sketch.g.textSize);
-                renderable.renderText();
-                sketch.popMatrix();
-
-                sketch.scale(screenSpace.z * globalScale);
-
-                renderable.render();
-
-                sketch.popMatrix();
-            } else {
-                renderable.render();
-                renderable.renderText();
-                renderable.renderUnscaled();
-            }
-
+            sketch.pushMatrix();
+            renderRenderable(renderable);
+            sketch.popMatrix();
         }
     }
 
     public void renderText() {
     }
 
-    public void renderUnscaled() {
-    }
 }
