@@ -5,7 +5,9 @@ import processing.core.PVector;
 
 public class UI {
     public static Renderable connectUI(){
-        InputBox inputBox = new InputBox(new PVector(100, 100), new PVector(100, 100));
+        InputBox inputBox = new InputBox(new PVector(0f, 0), new PVector(0.1f, 0.1f));
+        inputBox.setHorizontalAlignment(HorizontalAlignment.Center);
+        inputBox.setVerticalAlignment(VerticalAlignment.Center);
         return inputBox;
     }
 }

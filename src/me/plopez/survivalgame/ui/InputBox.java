@@ -7,14 +7,12 @@ import static me.plopez.survivalgame.Globals.sketch;
 public class InputBox extends UIElement {
 
     InputBox(PVector position, PVector size){
-        this.position = position;
-        this.size = size;
+        super(position, size);
     }
 
     @Override
-    public void render(){
+    protected void renderElement(PVector position, PVector size) {
         sketch.fill(255);
         sketch.rect(position.x, position.y, size.x, size.y);
     }
-
 }

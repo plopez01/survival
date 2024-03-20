@@ -38,7 +38,6 @@ public class Survival extends PApplet {
 
     public void setup() {
         Globals.sketch = this;
-
         if (startupOptions.xScreen() >= 0 && startupOptions.yScreen() >= 0)
             windowMove(startupOptions.xScreen(), startupOptions.yScreen());
 
