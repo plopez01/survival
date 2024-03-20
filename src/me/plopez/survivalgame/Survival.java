@@ -16,6 +16,8 @@ import processing.event.MouseEvent;
 
 import java.io.IOException;
 
+import static me.plopez.survivalgame.Globals.focusedElement;
+
 public class Survival extends PApplet {
 
     Debug debug = new Debug(this);
@@ -80,13 +82,16 @@ public class Survival extends PApplet {
     }
 
     public void mousePressed() {
+        focusedElement.onMousePressed(new PVector(mouseX, mouseY));
         holdOrigin = new PVector(mouseX, mouseY);
     }
 
     public void mouseReleased() {
+        focusedElement.onMouseReleased(new PVector(mouseX, mouseY));
     }
 
     public void mouseClicked() {
+        focusedElement.onClick(new PVector(mouseX, mouseY));
         //player.commandMove(camera.getRelativeWorldMouse(mouse));
         PVector target = client.getCamera().getRelativeWorldMouse();
         //client.getMyPlayer().commandMove(target);
@@ -100,10 +105,21 @@ public class Survival extends PApplet {
 
     public void mouseDragged() {
         PVector mousePos = new PVector(mouseX, mouseY);
-
         PVector displacement = mousePos.sub(holdOrigin);
+
+        focusedElement.onMouseDragged(displacement);
+
         client.camera.translate(client.camera.toWorldSpace(displacement));
         holdOrigin = new PVector(mouseX, mouseY);
+    }
+
+    @Override
+    public void keyPressed() {
+        focusedElement.onKeyPressed(key);
+    }
+
+    public void keyReleased(){
+        focusedElement.onKeyReleased(key);
     }
 
     public static void main(String[] args) {
