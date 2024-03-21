@@ -4,6 +4,7 @@ import me.plopez.survivalgame.rendering.Renderable;
 import processing.core.PVector;
 
 import static me.plopez.survivalgame.Globals.focusedElement;
+import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PConstants.CENTER;
 
 public class UI {

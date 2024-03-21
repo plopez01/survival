@@ -2,29 +2,40 @@ package me.plopez.survivalgame.ui;
 
 import processing.core.PVector;
 
+import java.util.function.Function;
+
 import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PConstants.*;
 
 public class InputBox extends UIElement {
-    String value = "";
+    StringBuilder value = new StringBuilder();
 
-    int backgroundColor = sketch.color(255);
-    int foregroundColor = sketch.color(0);
-    int strokeColor = sketch.color(0);
-    float strokeWeight = 1;
+    private int backgroundColor = sketch.color(255);
+    private int foregroundColor = sketch.color(0);
+    private int strokeColor = sketch.color(0);
+    private float strokeWeight = 1;
 
-    float margin = 0.005f;
+    // Screen relative
+    private final float caretWidth = 0.002f;
+    // InputBox relative
+    private final float caretHeight = 0.8f;
+    private int caretPos = 0;
+
+    private final float margin = 0.005f;
+
+    private Runnable onSubmitRunnable;
 
     InputBox(PVector position, PVector size){
         super(position, size);
     }
 
     public String getValue(){
-        return value;
+        return value.toString();
     }
 
     public void setValue(String value){
-        this.value = value;
+        this.value = new StringBuilder(value);
+        caretPos = value.length();
     }
 
     public void setBackgroundColor(int color){
@@ -55,11 +66,12 @@ public class InputBox extends UIElement {
         sketch.noStroke();
 
         sketch.fill(foregroundColor);
-        sketch.text(value, screenPos.x - screenSize.x/2 + margin*sketch.width, screenPos.y + sketch.textAscent()/2);
-        sketch.rectMode(CORNER);
+        sketch.textSize(screenSize.y * caretHeight);
+        sketch.text(getValue(), screenPos.x - screenSize.x/2 + margin*sketch.width, screenPos.y + sketch.textAscent()/2);
 
         // Caret
-        //sketch.square(screenPos.x + sketch.textWidth(value) - screenSize.x/2, screenPos.y, 20);
+        drawCaret(screenPos, screenSize, 1000);
+        sketch.rectMode(CORNER);
     }
 
     @Override
@@ -67,9 +79,9 @@ public class InputBox extends UIElement {
         super.onKeyPressed(key);
 
         if (handleSpecialKey(key)) return;
-        if (sketch.textWidth(value + key)/sketch.height > size.x - margin*2) return;
+        if (sketch.textWidth(value.toString() + key)/sketch.height > size.x - margin*2) return;
 
-        value += key;
+        writeAtCaret(key);
     }
 
     private boolean handleSpecialKey(char key) {
@@ -77,12 +89,71 @@ public class InputBox extends UIElement {
 
         switch (key){
             case '\b' -> {
-                if (!value.isEmpty()) value = value.substring(0, value.length()-1);
+                if (!value.isEmpty()) {
+                    eraseAtCaret(1);
+                }
             }
-            case '\n', CODED -> {}
-            default -> handled = false;
+            case '\n' -> submit();
+            case ' ' -> handled = false;
+            //DEL
+            case 127 -> {
+                eraseAtCaret(-1);
+            }
+            case CODED -> {
+                switch (sketch.keyCode) {
+                    case LEFT -> caretPos = Math.max(caretPos - 1, 0);
+                    case RIGHT -> caretPos = Math.min(caretPos + 1, value.length());
+                }
+            }
+            default -> {
+                if (Character.isLetterOrDigit(key)) handled = false;
+            }
         }
 
         return handled;
+    }
+
+    public void onSubmitHandler(Runnable runnable){
+        onSubmitRunnable = runnable;
+    }
+
+    public void submit(){
+        if (onSubmitRunnable != null) onSubmitRunnable.run();
+    }
+
+    public void writeAtCaret(String string){
+        value.insert(caretPos, string);
+        caretPos += string.length();
+    }
+
+    public void writeAtCaret(char character){
+        value.insert(caretPos, character);
+        caretPos++;
+    }
+
+    public void eraseAtCaret(int amount) {
+        if (value.isEmpty()) return;
+
+        if (amount > 0){
+            if (amount > caretPos) amount = caretPos;
+
+            value.delete(caretPos-amount, caretPos);
+            caretPos -= amount;
+        } else if (amount < 0) {
+            amount = Math.abs(amount);
+            if (amount > value.length() - caretPos ) amount = value.length();
+
+            value.delete(caretPos, caretPos+amount);
+        }
+
+    }
+
+    private void drawCaret(PVector screenPos, PVector screenSize, int blinkInterval){
+        if (sketch.millis() % blinkInterval < blinkInterval/2) {
+            sketch.rect(screenPos.x - screenSize.x/2 + margin*sketch.width + sketch.textWidth(value.substring(0, caretPos)),
+                    screenPos.y,
+                    caretWidth*sketch.width,
+                    caretHeight*screenSize.y);
+        }
     }
 }
