@@ -32,6 +32,10 @@ public class InputBox extends UIElement {
         super(position, size);
     }
 
+    InputBox(PVector position, PVector size, int drawOrigin){
+        super(position, size, drawOrigin);
+    }
+
     public String getValue(){
         return value.toString();
     }
@@ -62,7 +66,6 @@ public class InputBox extends UIElement {
         sketch.stroke(strokeColor);
         sketch.strokeWeight(strokeWeight);
 
-        sketch.rectMode(CENTER);
         sketch.fill(backgroundColor);
         sketch.rect(screenPos.x, screenPos.y, screenSize.x, screenSize.y);
 
@@ -73,8 +76,7 @@ public class InputBox extends UIElement {
         sketch.text(getValue(), screenPos.x - screenSize.x/2 + margin*sketch.width, screenPos.y + sketch.textAscent()/2);
 
         // Caret
-        drawCaret(screenPos, screenSize, 1000);
-        sketch.rectMode(CORNER);
+        if (isFocused(this)) drawCaret(screenPos, screenSize, 1000);
     }
 
     @Override

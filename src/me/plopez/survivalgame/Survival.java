@@ -3,13 +3,11 @@ package me.plopez.survivalgame;
 import joptsimple.*;
 import me.plopez.survivalgame.client.GameClient;
 import me.plopez.survivalgame.client.SeedManager;
-import me.plopez.survivalgame.entities.Player;
 import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
 import me.plopez.survivalgame.network.packet.MoveCommand;
-import me.plopez.survivalgame.rendering.Renderer;
 import me.plopez.survivalgame.server.GameServer;
-import me.plopez.survivalgame.ui.UI;
+import me.plopez.survivalgame.ui.ConnectUI;
 import me.plopez.survivalgame.util.StartupOptions;
 import processing.core.*;
 import processing.event.MouseEvent;
@@ -17,6 +15,7 @@ import processing.event.MouseEvent;
 import java.io.IOException;
 
 import static me.plopez.survivalgame.Globals.focusedElement;
+import static me.plopez.survivalgame.Globals.mainCanvas;
 
 public class Survival extends PApplet {
 
@@ -26,8 +25,6 @@ public class Survival extends PApplet {
     StartupOptions startupOptions;
     GameServer server;
     GameClient client;
-
-    Renderer gameRenderer = new Renderer(1);
 
     Survival(StartupOptions startupOptions){
         this.startupOptions = startupOptions;
@@ -52,27 +49,34 @@ public class Survival extends PApplet {
             server.log.info("Server started at port " + server.getPort());
         }
 
-        client = GameClient.connect("127.0.0.1", 5000, "Pau");
-        gameRenderer.add(UI.connectUI());
+        mainCanvas = new ConnectUI((String ip, String playerName) -> {
+            client = GameClient.connect(ip, 5000, playerName);
+            return null;
+        });
     }
 
     public void draw() {
         if (server != null) server.tick();
 
-        client.tick();
-
         debug.add("FPS", frameRate);
-        if (startupOptions.isHost()) {
-            debug.add("Players connected", server.clientCount);
+
+        if (client != null) {
+            client.tick();
+
+            if (startupOptions.isHost()) {
+                debug.add("Players connected", server.clientCount);
+            }
+
+            debug.add("Game seed", seedManager.getSeed());
+            debug.add("Pos", client.camera.transform);
+            debug.add("Zoom", client.camera.getZoom());
+            debug.add("ScreenMouse", Mouse.getMouseDistFromCenter(this));
+            debug.add("WorldMouse", client.camera.getRelativeWorldMouse());
+            //debug.showPointer();
         }
-        debug.add("Game seed", seedManager.getSeed());
-        debug.add("Pos", client.camera.transform);
-        debug.add("Zoom", client.camera.getZoom());
-        debug.add("ScreenMouse", Mouse.getMouseDistFromCenter(this));
-        debug.add("WorldMouse", client.camera.getRelativeWorldMouse());
-        //debug.showPointer();
+
         debug.render();
-        gameRenderer.render();
+        if (mainCanvas != null) mainCanvas.render();
     }
 
     PVector holdOrigin = new PVector();
@@ -82,32 +86,31 @@ public class Survival extends PApplet {
     }
 
     public void mousePressed() {
-        focusedElement.onMousePressed(new PVector(mouseX, mouseY));
+        if (focusedElement != null) focusedElement.onMousePressed(Mouse.relativePos());
         holdOrigin = new PVector(mouseX, mouseY);
     }
 
     public void mouseReleased() {
-        focusedElement.onMouseReleased(new PVector(mouseX, mouseY));
+        if (focusedElement != null) focusedElement.onMouseReleased(Mouse.relativePos());
     }
 
     public void mouseClicked() {
-        focusedElement.onClick(new PVector(mouseX, mouseY));
-        //player.commandMove(camera.getRelativeWorldMouse(mouse));
-        PVector target = client.getCamera().getRelativeWorldMouse();
-        //client.getMyPlayer().commandMove(target);
+        if (mainCanvas != null) mainCanvas.onClick(Mouse.mousePos());
+
+        /*PVector target = client.getCamera().getRelativeWorldMouse();
         MoveCommand cmd = new MoveCommand(client.getMyPlayer().getName(), target);
         try {
             client.output.write(cmd.serialize());
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     public void mouseDragged() {
         PVector mousePos = new PVector(mouseX, mouseY);
         PVector displacement = mousePos.sub(holdOrigin);
 
-        focusedElement.onMouseDragged(displacement);
+        if (focusedElement != null) focusedElement.onMouseDragged(displacement);
 
         client.camera.translate(client.camera.toWorldSpace(displacement));
         holdOrigin = new PVector(mouseX, mouseY);
@@ -115,11 +118,11 @@ public class Survival extends PApplet {
 
     @Override
     public void keyPressed() {
-        focusedElement.onKeyPressed(key);
+        if (focusedElement != null) focusedElement.onKeyPressed(key);
     }
 
     public void keyReleased(){
-        focusedElement.onKeyReleased(key);
+        if (focusedElement != null) focusedElement.onKeyReleased(key);
     }
 
     public static void main(String[] args) {

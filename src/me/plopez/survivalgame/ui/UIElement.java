@@ -1,10 +1,12 @@
 package me.plopez.survivalgame.ui;
 
 import me.plopez.survivalgame.rendering.Renderable;
+import me.plopez.survivalgame.util.Vector;
 import processing.core.PVector;
 
 import static me.plopez.survivalgame.Globals.focusedElement;
 import static me.plopez.survivalgame.Globals.sketch;
+import static processing.core.PConstants.CENTER;
 import static processing.core.PConstants.CORNER;
 
 public abstract class UIElement implements Renderable {
@@ -12,10 +14,17 @@ public abstract class UIElement implements Renderable {
     PVector size;
     VerticalAlignment verticalAlignment = VerticalAlignment.Top;
     HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left;
+    int drawOrigin = CORNER;
 
     UIElement(PVector position, PVector size){
         this.position = position;
         this.size = size;
+    }
+
+    UIElement(PVector position, PVector size, int drawOrigin){
+        this.position = position;
+        this.size = size;
+        this.drawOrigin = drawOrigin;
     }
 
     public void setVerticalAlignment(VerticalAlignment alignment) {
@@ -28,7 +37,7 @@ public abstract class UIElement implements Renderable {
 
     protected abstract void renderElement(PVector screenPos, PVector screenSize);
 
-    public final void render() {
+    public PVector getScreenPosition(){
         PVector elementPosition = new PVector();
 
         elementPosition.x = switch (horizontalAlignment) {
@@ -43,7 +52,24 @@ public abstract class UIElement implements Renderable {
             case Bottom -> (1-position.y) * sketch.height;
         };
 
-        renderElement(elementPosition, PVector.mult(size, sketch.height));
+        return elementPosition;
+    }
+
+    public PVector getScreenSize(){
+        return PVector.mult(size, sketch.height);
+    }
+
+    public boolean hitTest(PVector screenPos) {
+        return switch (drawOrigin){
+            case CORNER -> Vector.boxCast(screenPos, getScreenPosition(), getScreenSize());
+            case CENTER -> Vector.boxCast(screenPos, PVector.sub(getScreenPosition(), PVector.div(getScreenSize(), 2)), getScreenSize());
+            default -> false;
+        };
+    }
+
+    public final void render() {
+        sketch.rectMode(drawOrigin);
+        renderElement(getScreenPosition(), getScreenSize());
     }
     public final void renderText() {}
 
