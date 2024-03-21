@@ -1,5 +1,6 @@
 package me.plopez.survivalgame.ui;
 
+import me.plopez.survivalgame.util.RangeConstrain;
 import processing.core.PVector;
 
 import java.util.function.Function;
@@ -24,6 +25,8 @@ public class InputBox extends UIElement {
     private final float margin = 0.005f;
 
     private Runnable onSubmitRunnable;
+
+    private long caretBlinkTime = 0;
 
     InputBox(PVector position, PVector size){
         super(position, size);
@@ -101,8 +104,8 @@ public class InputBox extends UIElement {
             }
             case CODED -> {
                 switch (sketch.keyCode) {
-                    case LEFT -> caretPos = Math.max(caretPos - 1, 0);
-                    case RIGHT -> caretPos = Math.min(caretPos + 1, value.length());
+                    case LEFT -> moveCaret(-1);
+                    case RIGHT -> moveCaret(1);
                 }
             }
             default -> {
@@ -121,14 +124,23 @@ public class InputBox extends UIElement {
         if (onSubmitRunnable != null) onSubmitRunnable.run();
     }
 
+    public void moveCaret(int amount) {
+        RangeConstrain constrain = new RangeConstrain(0, value.length());
+
+        caretPos += amount;
+
+        if (constrain.inBounds(caretPos)) caretBlinkTime = 0;
+        caretPos = constrain.enforce(caretPos);
+    }
+
     public void writeAtCaret(String string){
         value.insert(caretPos, string);
         caretPos += string.length();
+        caretBlinkTime = 0;
     }
 
     public void writeAtCaret(char character){
-        value.insert(caretPos, character);
-        caretPos++;
+        writeAtCaret(Character.toString(character));
     }
 
     public void eraseAtCaret(int amount) {
@@ -140,20 +152,24 @@ public class InputBox extends UIElement {
             value.delete(caretPos-amount, caretPos);
             caretPos -= amount;
         } else if (amount < 0) {
+            if (caretPos == value.length()) return;
+
             amount = Math.abs(amount);
             if (amount > value.length() - caretPos ) amount = value.length();
 
             value.delete(caretPos, caretPos+amount);
         }
 
+        caretBlinkTime = 0;
     }
 
     private void drawCaret(PVector screenPos, PVector screenSize, int blinkInterval){
-        if (sketch.millis() % blinkInterval < blinkInterval/2) {
+        if (caretBlinkTime % blinkInterval < blinkInterval/2) {
             sketch.rect(screenPos.x - screenSize.x/2 + margin*sketch.width + sketch.textWidth(value.substring(0, caretPos)),
                     screenPos.y,
                     caretWidth*sketch.width,
                     caretHeight*screenSize.y);
         }
+        caretBlinkTime += (long) (1000/sketch.frameRate);
     }
 }

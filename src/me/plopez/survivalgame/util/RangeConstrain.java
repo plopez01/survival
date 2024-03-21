@@ -14,6 +14,12 @@ public class RangeConstrain {
         else return value;
     }
 
+    public int enforce(int value) {
+        if (value > max) return (int) max;
+        else if (value < min) return (int) min;
+        else return value;
+    }
+
     public boolean inBounds(float value) {
         return value <= max && value >= min;
     }
