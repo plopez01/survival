@@ -3,6 +3,7 @@ package me.plopez.survivalgame.ui;
 import me.plopez.survivalgame.rendering.Renderable;
 import processing.core.PVector;
 
+import static me.plopez.survivalgame.Globals.focusedElement;
 import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PConstants.CORNER;
 
@@ -25,7 +26,7 @@ public abstract class UIElement implements Renderable {
         horizontalAlignment = alignment;
     }
 
-    protected abstract void renderElement(PVector position, PVector size);
+    protected abstract void renderElement(PVector screenPos, PVector screenSize);
 
     public final void render() {
         PVector elementPosition = new PVector();
@@ -45,6 +46,10 @@ public abstract class UIElement implements Renderable {
         renderElement(elementPosition, PVector.mult(size, sketch.height));
     }
     public final void renderText() {}
+
+    public static boolean isFocused(UIElement element){
+        return focusedElement == element;
+    }
 
     public void onClick(PVector position){}
     public void onMousePressed(PVector position){}
