@@ -14,6 +14,10 @@ public class CameraRenderer extends Renderer {
         this.cam = cam;
     }
 
+    public Camera getCam() {
+        return cam;
+    }
+
     @Override
     protected void renderRenderable(Renderable renderable) {
         if (renderable instanceof WorldObject worldObject) {

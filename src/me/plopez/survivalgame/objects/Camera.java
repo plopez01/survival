@@ -7,15 +7,15 @@ import me.plopez.survivalgame.util.Vector;
 import processing.core.PVector;
 import processing.core.PApplet;
 
+import static me.plopez.survivalgame.Globals.sketch;
+
 public class Camera extends WorldObject {
-    PApplet sketch;
     float zoom, resolution;
     float moveSensitivity, zoomSensitivity;
 
     RangeConstrain zoomConstrain;
 
-    public Camera(PApplet sketch, float resolution, float zoom, RangeConstrain zoomConstrain, float moveSensitivity, float zoomSensitivity) {
-        this.sketch = sketch;
+    public Camera(float resolution, float zoom, RangeConstrain zoomConstrain, float moveSensitivity, float zoomSensitivity) {
         this.resolution = resolution;
         this.zoom = zoom;
 

@@ -3,17 +3,16 @@ package me.plopez.survivalgame.rendering;
 import me.plopez.survivalgame.objects.Camera;
 import processing.core.PApplet;
 
+import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PApplet.abs;
 
 public class Terrain {
-    PApplet sketch;
     int terrainSize, translationOffset;
     float heightOffset;
 
     int baseDetail, zoomDetail;
 
-    public Terrain(PApplet sketch, int terrainSize, int translationOffset, float heightOffset, int baseDetail, int zoomDetail) {
-        this.sketch = sketch;
+    public Terrain(int terrainSize, int translationOffset, float heightOffset, int baseDetail, int zoomDetail) {
         this.terrainSize = terrainSize;
         this.translationOffset = translationOffset;
         this.heightOffset = heightOffset;

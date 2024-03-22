@@ -9,10 +9,7 @@ import me.plopez.survivalgame.network.Client;
 import me.plopez.survivalgame.network.packet.*;
 import me.plopez.survivalgame.objects.Camera;
 import me.plopez.survivalgame.objects.WorldObject;
-import me.plopez.survivalgame.rendering.CameraRenderer;
-import me.plopez.survivalgame.rendering.Renderable;
-import me.plopez.survivalgame.rendering.Renderer;
-import me.plopez.survivalgame.rendering.Terrain;
+import me.plopez.survivalgame.rendering.*;
 import me.plopez.survivalgame.util.RangeConstrain;
 
 import processing.core.PApplet;
@@ -28,21 +25,19 @@ import static me.plopez.survivalgame.Globals.sketch;
 
 public class GameClient extends Client {
     public Logger log = new Logger(LoggingLevel.ALL, Logger.CYAN + "CLIENT> " + Logger.RESET);
-    Terrain terrain;
     public Camera camera;
-    Renderer renderer;
-    List<WorldObject> worldObjects;
-    Map<String, Player> players = new HashMap<>();
     Player myPlayer;
 
+    World world;
     public GameClient(String address, int port, String playerName) throws IOException {
         super(sketch, address, port);
 
         myPlayer = new Player(playerName, 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
+        camera = new Camera(16, 20, new RangeConstrain(10, 80), 1, 4);
 
-        terrain = new Terrain(sketch, 4, 5000, 0.5f, 5, 5);
-        camera = new Camera(sketch, 16, 20, new RangeConstrain(10, 80), 1, 4);
-        renderer = new CameraRenderer(0.01f, camera);
+        world = new World(
+                new Terrain(4, 5000, 0.5f, 5, 5),
+                new CameraRenderer(0.01f, camera));
 
         // Download world
         try {
@@ -51,14 +46,9 @@ public class GameClient extends Client {
 
             ServerHandshake sHandshake = (ServerHandshake) PacketType.getType(is.readByte()).makePacket(is);
             ((Survival) sketch).seedManager.setSeed(sHandshake.seed);
-            worldObjects = sHandshake.worldObjects;
+            world.setWorldObjects(sHandshake.worldObjects);
             log.debug("Handled server handshake.");
             log.info("World seed: " + sHandshake.seed);
-
-            for (WorldObject worldObject : worldObjects) {
-                if (worldObject instanceof Renderable r) renderer.add(r);
-                if (worldObject instanceof Player p) players.put(p.getName(), p);
-            }
 
             ClientConnect cHandshake = new ClientConnect(myPlayer);
             output.write(cHandshake.serialize());
@@ -72,8 +62,7 @@ public class GameClient extends Client {
     public void tick() {
         handleIncomingPackets();
 
-        terrain.renderAt(camera);
-        renderer.render();
+        world.render();
     }
 
     private void handleIncomingPackets(){
@@ -96,13 +85,13 @@ public class GameClient extends Client {
                 }
                 case MOVE_COMMAND -> {
                     MoveCommand moveCommand = (MoveCommand) inPacket;
-                    Player player = players.get(moveCommand.entityID);
+                    Player player = world.getPlayer(moveCommand.entityID);
                     player.commandMove(moveCommand.target);
                 }
                 case CLIENT_DISCONNECT -> {
                     ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
 
-                    Player localPlayer = players.get(clientDisconnect.player.getName());
+                    Player localPlayer = world.getPlayer(clientDisconnect.player.getName());
                     removePlayer(localPlayer);
                 }
                 default -> throw new IllegalStateException("Unexpected value: " + inPacket);
@@ -113,18 +102,13 @@ public class GameClient extends Client {
     }
 
     public void registerPlayer(Player player) throws DuplicatePlayerException {
-        if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
         log.debug("Registering player " + player.getName());
-        worldObjects.add(player);
-        players.put(player.getName(), player);
-        renderer.add(player);
+        world.addPlayer(player);
     }
 
     public void removePlayer(Player player){
-        renderer.remove(player);
-        worldObjects.remove(player);
-        players.remove(player.getName());
         log.debug("Removing player " + player.getName());
+        world.removePlayer(player.getName());
     }
 
     public Player getMyPlayer() {

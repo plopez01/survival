@@ -81,6 +81,7 @@ public class Survival extends PApplet {
 
     PVector holdOrigin = new PVector();
 
+    //TODO we should move GameClient related events and maybe implement some type of event subscription system
     public void mouseWheel(MouseEvent event) {
         if (client != null) client.camera.updateZoom(-event.getCount());
     }
