@@ -82,7 +82,7 @@ public class Survival extends PApplet {
     PVector holdOrigin = new PVector();
 
     public void mouseWheel(MouseEvent event) {
-        client.camera.updateZoom(-event.getCount());
+        if (client != null) client.camera.updateZoom(-event.getCount());
     }
 
     public void mousePressed() {
@@ -96,7 +96,7 @@ public class Survival extends PApplet {
 
     public void mouseClicked() {
         if (mainCanvas != null) mainCanvas.onClick(Mouse.mousePos());
-
+        else client.onClick(Mouse.mousePos());
         /*PVector target = client.getCamera().getRelativeWorldMouse();
         MoveCommand cmd = new MoveCommand(client.getMyPlayer().getName(), target);
         try {
@@ -112,7 +112,8 @@ public class Survival extends PApplet {
 
         if (focusedElement != null) focusedElement.onMouseDragged(displacement);
 
-        client.camera.translate(client.camera.toWorldSpace(displacement));
+        if (client != null) client.camera.translate(client.camera.toWorldSpace(displacement));
+
         holdOrigin = new PVector(mouseX, mouseY);
     }
 

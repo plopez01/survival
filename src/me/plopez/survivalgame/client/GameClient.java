@@ -16,6 +16,7 @@ import me.plopez.survivalgame.rendering.Terrain;
 import me.plopez.survivalgame.util.RangeConstrain;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -132,6 +133,15 @@ public class GameClient extends Client {
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public void onClick(PVector pos) {
+        MoveCommand cmd = new MoveCommand(getMyPlayer().getName(), getCamera().getRelativeWorldMouse());
+        try {
+            output.write(cmd.serialize());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

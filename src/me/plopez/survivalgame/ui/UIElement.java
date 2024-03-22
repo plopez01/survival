@@ -74,7 +74,7 @@ public abstract class UIElement implements Renderable {
     public final void renderText() {}
 
     public static boolean isFocused(UIElement element){
-        return focusedElement == element;
+        return focusedElement == element && sketch.focused;
     }
 
     public void onClick(PVector position){}
