@@ -3,7 +3,7 @@ package me.plopez.survivalgame.network.packet;
 import java.io.IOException;
 
 public enum PacketType {
-    SERVER_HANDSHAKE(ServerHandshake::new),
+    WORLD_DATA(WorldData::new),
     CLIENT_CONNECT(ClientConnect::new),
     CLIENT_DISCONNECT(ClientDisconnect::new),
     MOVE_COMMAND(MoveCommand::new);

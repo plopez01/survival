@@ -1,4 +1,4 @@
-package me.plopez.survivalgame.entities;
+package me.plopez.survivalgame.objects.entities;
 
 import me.plopez.survivalgame.objects.WorldObject;
 import me.plopez.survivalgame.rendering.Renderable;
@@ -7,7 +7,7 @@ import processing.core.PVector;
 import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PConstants.*;
 
-public class Player extends WorldObject implements Renderable, Commandable {
+public class Player extends Entity implements Renderable {
     String name;
     float speed;
     int c;

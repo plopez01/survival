@@ -1,32 +1,34 @@
 package me.plopez.survivalgame.rendering;
 
-import me.plopez.survivalgame.entities.Player;
+import me.plopez.survivalgame.objects.entities.Entity;
+import me.plopez.survivalgame.objects.entities.Player;
 import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.objects.WorldObject;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
-public class World implements Renderable {
-    List<WorldObject> worldObjects;
+public class World implements Serializable {
+    int seed;
+    List<WorldObject> worldObjects = new ArrayList<>();
+    Map<UUID, WorldObject> worldObjectsMap = new HashMap<>();
+    List<Renderable> renderables = new ArrayList<>();
     Map<String, Player> players = new HashMap<>();
     Terrain terrain;
 
-    CameraRenderer renderer;
-
-    public World(Terrain terrain, CameraRenderer renderer){
+    public World(int seed, Terrain terrain){
+        this.seed = seed;
         this.terrain = terrain;
-        this.renderer = renderer;
     }
 
-    public void setWorldObjects(List<WorldObject> worldObjects) {
+    public World(int seed, Terrain terrain, List<WorldObject> worldObjects){
+        this.seed = seed;
+        this.terrain = terrain;
         this.worldObjects = worldObjects;
+    }
 
-        for (WorldObject worldObject : worldObjects) {
-            if (worldObject instanceof Renderable r) renderer.add(r);
-            if (worldObject instanceof Player p) players.put(p.getName(), p);
-        }
+    public List<Renderable> getRenderables(){
+        return renderables;
     }
 
     public List<WorldObject> getWorldObjects(){
@@ -35,6 +37,15 @@ public class World implements Renderable {
 
     public Player getPlayer(String playerName){
         return players.get(playerName);
+    }
+
+    public Entity getEntity(UUID id) throws IllegalArgumentException {
+        if (worldObjectsMap.get(id) instanceof Entity entity) return entity;
+        else throw new IllegalArgumentException("Object with id " + id.toString() + " is not an Entity");
+    }
+
+    public WorldObject getObject(UUID id) {
+        return worldObjectsMap.get(id);
     }
 
     public void addPlayer(Player player) throws DuplicatePlayerException
@@ -56,22 +67,21 @@ public class World implements Renderable {
 
     public void addObject(WorldObject object){
         worldObjects.add(object);
-        if (object instanceof Renderable r) renderer.add(r);
+        worldObjectsMap.put(object.getId(), object);
+        if (object instanceof Renderable r) renderables.add(r);
     }
 
     public void removeObject(WorldObject object){
         worldObjects.remove(object);
-        if (object instanceof Renderable r) renderer.remove(r);
+        worldObjectsMap.remove(object.getId());
+        if (object instanceof Renderable r) renderables.remove(r);
     }
 
-    @Override
-    public void render() {
-        terrain.renderAt(renderer.getCam());
-        renderer.render();
+    public Terrain getTerrain(){
+        return terrain;
     }
 
-    @Override
-    public void renderText() {
-
+    public int getSeed(){
+        return seed;
     }
 }

@@ -1,6 +1,6 @@
 package me.plopez.survivalgame.network.packet;
 
-import me.plopez.survivalgame.entities.Player;
+import me.plopez.survivalgame.objects.entities.Player;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

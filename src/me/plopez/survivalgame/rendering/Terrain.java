@@ -3,10 +3,12 @@ package me.plopez.survivalgame.rendering;
 import me.plopez.survivalgame.objects.Camera;
 import processing.core.PApplet;
 
+import java.io.Serializable;
+
 import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PApplet.abs;
 
-public class Terrain {
+public class Terrain implements Serializable {
     int terrainSize, translationOffset;
     float heightOffset;
 

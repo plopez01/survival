@@ -4,11 +4,12 @@ import processing.core.PVector;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.UUID;
 
 public class MoveCommand extends NetworkPacket {
-    public String entityID;
+    public UUID entityID;
     public PVector target;
-    public MoveCommand(String entityID, PVector target) {
+    public MoveCommand(UUID entityID, PVector target) {
         super(PacketType.MOVE_COMMAND);
         this.entityID = entityID;
         this.target = target;
@@ -16,7 +17,7 @@ public class MoveCommand extends NetworkPacket {
 
     public MoveCommand(PacketInputStream pis) throws IOException {
         super(PacketType.MOVE_COMMAND);
-        entityID = (String) pis.readPackedObject();
+        entityID = (UUID) pis.readPackedObject();
         target = (PVector) pis.readPackedObject();
     }
 

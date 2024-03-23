@@ -6,6 +6,8 @@ import me.plopez.survivalgame.client.SeedManager;
 import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
 import me.plopez.survivalgame.network.packet.MoveCommand;
+import me.plopez.survivalgame.rendering.Terrain;
+import me.plopez.survivalgame.rendering.World;
 import me.plopez.survivalgame.server.GameServer;
 import me.plopez.survivalgame.ui.ConnectUI;
 import me.plopez.survivalgame.util.StartupOptions;
@@ -45,7 +47,8 @@ public class Survival extends PApplet {
         background(0);
 
         if (startupOptions.isHost()) {
-            server = new GameServer(this, 5000, seedManager.getSeed());
+            World world = new World(seedManager.getSeed(), new Terrain(4, 5000, 0.5f, 5, 5));
+            server = new GameServer(this, 5000, world);
             server.log.info("Server started at port " + server.getPort());
         }
 

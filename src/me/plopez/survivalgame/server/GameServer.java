@@ -1,36 +1,32 @@
 package me.plopez.survivalgame.server;
 
-import me.plopez.survivalgame.entities.Player;
+import me.plopez.survivalgame.objects.entities.Entity;
+import me.plopez.survivalgame.objects.entities.Player;
 import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.log.Logger;
 import me.plopez.survivalgame.log.LoggingLevel;
 import me.plopez.survivalgame.network.Client;
 import me.plopez.survivalgame.network.Server;
 import me.plopez.survivalgame.network.packet.*;
-import me.plopez.survivalgame.objects.WorldObject;
+import me.plopez.survivalgame.rendering.World;
 import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.io.IOException;
-import java.util.*;
 
 public class GameServer extends Server {
     public Logger log = new Logger(LoggingLevel.ALL, Logger.PURPLE + "SERVER> " + Logger.RESET);
-    int seed;
     int port;
-    List<WorldObject> worldObjects;
+    World world;
 
-    Map<String, Player> players = new HashMap<>();
-
-    public GameServer(PApplet parent, int port, int seed) {
+    public GameServer(PApplet parent, int port, World world) {
         super(parent, port);
-        this.seed = seed;
         this.port = port;
-        this.worldObjects = new ArrayList<>();
+        this.world = world;
     }
 
     public int getSeed() {
-        return seed;
+        return world.getSeed();
     }
 
     public int getPort() {
@@ -56,20 +52,21 @@ public class GameServer extends Server {
                             log.warn("Client (" + client.ip() + ") tried to connect with name "
                                     + clientConnect.player.getName() +
                                     " but another player with the same name already exists.");
+                            disconnect(client);
                         }
                     }
                     case MOVE_COMMAND -> {
                         MoveCommand moveCommand = (MoveCommand) inPacket;
 
-                        Player player = players.get(moveCommand.entityID);
-                        player.transform.set(new PVector(-moveCommand.target.x, -moveCommand.target.y, player.transform.z));
+                        Entity entity = world.getEntity(moveCommand.entityID);
+                        entity.transform.set(new PVector(-moveCommand.target.x, -moveCommand.target.y, entity.transform.z));
 
                         broadcast(inPacket);
                     }
                     case CLIENT_DISCONNECT -> {
                         ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
 
-                        Player localPlayer = players.get(clientDisconnect.player.getName());
+                        Player localPlayer = world.getPlayer(clientDisconnect.player.getName());
                         removePlayer(localPlayer);
 
                         disconnect(client);
@@ -101,16 +98,13 @@ public class GameServer extends Server {
     }
 
     public void registerPlayer(Player player) throws DuplicatePlayerException {
-        if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
         log.debug("Registering player " + player.getName());
-        worldObjects.add(player);
-        players.put(player.getName(), player);
+        world.addPlayer(player);
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(Player player){
         log.debug("Removing player " + player.getName());
-        worldObjects.remove(player);
-        players.remove(player.getName());
+        world.removePlayer(player.getName());
     }
 
     @Override
@@ -118,7 +112,7 @@ public class GameServer extends Server {
         super.onClientConnect(client);
         log.info("We have a new client: " + client.ip());
         try {
-            var packet = new ServerHandshake(getSeed(), worldObjects);
+            var packet = new WorldData(world);
             client.output.write(packet.serialize());
         } catch (IOException e) {
             log.error(e);

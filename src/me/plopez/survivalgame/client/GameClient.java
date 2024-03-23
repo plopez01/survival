@@ -1,31 +1,28 @@
 package me.plopez.survivalgame.client;
 
 import me.plopez.survivalgame.Survival;
-import me.plopez.survivalgame.entities.Player;
+import me.plopez.survivalgame.objects.entities.Entity;
+import me.plopez.survivalgame.objects.entities.Player;
 import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.log.Logger;
 import me.plopez.survivalgame.log.LoggingLevel;
 import me.plopez.survivalgame.network.Client;
 import me.plopez.survivalgame.network.packet.*;
 import me.plopez.survivalgame.objects.Camera;
-import me.plopez.survivalgame.objects.WorldObject;
 import me.plopez.survivalgame.rendering.*;
 import me.plopez.survivalgame.util.RangeConstrain;
 
-import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static me.plopez.survivalgame.Globals.sketch;
 
 
 public class GameClient extends Client {
     public Logger log = new Logger(LoggingLevel.ALL, Logger.CYAN + "CLIENT> " + Logger.RESET);
-    public Camera camera;
+    public Camera camera = new Camera(16, 20, new RangeConstrain(10, 80), 1, 4);
+    CameraRenderer renderer = new CameraRenderer(0.01f, camera);
     Player myPlayer;
 
     World world;
@@ -33,22 +30,17 @@ public class GameClient extends Client {
         super(sketch, address, port);
 
         myPlayer = new Player(playerName, 10000, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
-        camera = new Camera(16, 20, new RangeConstrain(10, 80), 1, 4);
-
-        world = new World(
-                new Terrain(4, 5000, 0.5f, 5, 5),
-                new CameraRenderer(0.01f, camera));
-
         // Download world
         try {
             // Server handshake
             PacketInputStream is = new PacketInputStream(input);
 
-            ServerHandshake sHandshake = (ServerHandshake) PacketType.getType(is.readByte()).makePacket(is);
-            ((Survival) sketch).seedManager.setSeed(sHandshake.seed);
-            world.setWorldObjects(sHandshake.worldObjects);
+            WorldData worldData = (WorldData) PacketType.getType(is.readByte()).makePacket(is);
+            world = worldData.world;
+            ((Survival) sketch).seedManager.setSeed(worldData.world.getSeed());
+
             log.debug("Handled server handshake.");
-            log.info("World seed: " + sHandshake.seed);
+            log.info("World seed: " + world.getSeed());
 
             ClientConnect cHandshake = new ClientConnect(myPlayer);
             output.write(cHandshake.serialize());
@@ -62,7 +54,9 @@ public class GameClient extends Client {
     public void tick() {
         handleIncomingPackets();
 
-        world.render();
+        world.getTerrain().renderAt(camera);
+        renderer.render(world.getRenderables());
+        renderer.render();
     }
 
     private void handleIncomingPackets(){
@@ -85,8 +79,8 @@ public class GameClient extends Client {
                 }
                 case MOVE_COMMAND -> {
                     MoveCommand moveCommand = (MoveCommand) inPacket;
-                    Player player = world.getPlayer(moveCommand.entityID);
-                    player.commandMove(moveCommand.target);
+                    Entity entity = world.getEntity(moveCommand.entityID);
+                    entity.commandMove(moveCommand.target);
                 }
                 case CLIENT_DISCONNECT -> {
                     ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
@@ -120,7 +114,7 @@ public class GameClient extends Client {
     }
 
     public void onClick(PVector pos) {
-        MoveCommand cmd = new MoveCommand(getMyPlayer().getName(), getCamera().getRelativeWorldMouse());
+        MoveCommand cmd = new MoveCommand(getMyPlayer().getId(), getCamera().getRelativeWorldMouse());
         try {
             output.write(cmd.serialize());
         } catch (IOException e) {

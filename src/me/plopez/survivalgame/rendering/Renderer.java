@@ -1,16 +1,12 @@
 package me.plopez.survivalgame.rendering;
 
-import me.plopez.survivalgame.objects.Camera;
-import me.plopez.survivalgame.objects.WorldObject;
-import processing.core.PVector;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static me.plopez.survivalgame.Globals.sketch;
 
 public class Renderer implements Renderable {
-    ArrayList<Renderable> renderables = new ArrayList<>();
+    ArrayList<Renderable> renderableBuffer = new ArrayList<>();
     float globalScale;
 
     public Renderer(float globalScale) {
@@ -18,13 +14,13 @@ public class Renderer implements Renderable {
     }
 
     public void add(Renderable renderable) {
-        renderables.add(renderable);
+        renderableBuffer.add(renderable);
     }
     public void add(List<Renderable> newList) {
-        renderables.addAll(newList);
+        renderableBuffer.addAll(newList);
     }
     public void remove(Renderable renderable) {
-        renderables.remove(renderable);
+        renderableBuffer.remove(renderable);
     }
 
     protected void renderRenderable(Renderable renderable){
@@ -34,6 +30,10 @@ public class Renderer implements Renderable {
     }
 
     public void render() {
+        render(renderableBuffer);
+    }
+
+    public void render(List<Renderable> renderables) {
         for (Renderable renderable : renderables) {
             sketch.pushMatrix();
             renderRenderable(renderable);
