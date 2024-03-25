@@ -60,7 +60,7 @@ public class Camera extends WorldObject {
     }
 
     public PVector getRelativeWorldMouse() {
-        return Vector.multiplyVectors(Mouse.getMouseDistFromCenter(sketch), getWorldViewportSize()).add(transform);
+        return getWorldMouse().add(transform);
     }
 
     PVector getWorldViewportSize() {
@@ -68,15 +68,15 @@ public class Camera extends WorldObject {
     }
 
     public PVector toScreenSpace(PVector in) {
-        return new PVector(in.x * -zoom * resolution, in.y * -zoom * resolution, in.z * zoom * resolution);
+        return new PVector(in.x * zoom * resolution, in.y * zoom * resolution, in.z * zoom * resolution);
     }
 
     public PVector toWorldSpace(PVector in) {
-        return new PVector(in.x / (-zoom * resolution), in.y / (-zoom * resolution), in.z / (zoom * resolution));
+        return new PVector(in.x / (zoom * resolution), in.y / (zoom * resolution), in.z / (zoom * resolution));
     }
 
     public PVector toRelativeScreenSpace(PVector in) {
-        PVector newPos = new PVector(transform.x - in.x, transform.y - in.y, transform.z + in.z);
+        PVector newPos = new PVector(-transform.x + in.x, -transform.y + in.y, transform.z + in.z);
         PVector screenSpace = toScreenSpace(newPos);
         return new PVector(screenSpace.x + ((float) sketch.width / 2), screenSpace.y + ((float) sketch.height / 2), screenSpace.z);
     }

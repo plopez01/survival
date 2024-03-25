@@ -16,7 +16,7 @@ public class Mouse {
 
     public static PVector getMouseDistFromCenter(PApplet sketch) {
         return new PVector(
-                (float) (sketch.width / 2 - sketch.mouseX) / sketch.width,
-                (float) (sketch.height / 2 - sketch.mouseY) / sketch.height);
+                (float) (sketch.mouseX - sketch.width / 2 ) / sketch.width,
+                (float) (sketch.mouseY - sketch.height / 2) / sketch.height);
     }
 }

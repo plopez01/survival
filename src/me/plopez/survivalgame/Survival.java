@@ -116,7 +116,7 @@ public class Survival extends PApplet {
 
         if (focusedElement != null) focusedElement.onMouseDragged(displacement);
 
-        if (client != null) client.camera.translate(client.camera.toWorldSpace(displacement));
+        if (client != null) client.camera.translate(client.camera.toWorldSpace(PVector.mult(displacement, -1)));
 
         holdOrigin = new PVector(mouseX, mouseY);
     }
