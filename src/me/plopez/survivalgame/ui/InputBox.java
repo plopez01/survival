@@ -1,7 +1,7 @@
 package me.plopez.survivalgame.ui;
 
 import me.plopez.survivalgame.util.RangeConstrain;
-import processing.core.PVector;
+import me.plopez.survivalgame.vector.VectorF;
 
 import java.util.function.Function;
 
@@ -28,11 +28,11 @@ public class InputBox extends UIElement {
 
     private long caretBlinkTime = 0;
 
-    InputBox(PVector position, PVector size){
+    InputBox(VectorF position, VectorF size){
         super(position, size);
     }
 
-    InputBox(PVector position, PVector size, int drawOrigin){
+    InputBox(VectorF position, VectorF size, int drawOrigin){
         super(position, size, drawOrigin);
     }
 
@@ -62,7 +62,7 @@ public class InputBox extends UIElement {
     }
 
     @Override
-    protected void renderElement(PVector screenPos, PVector screenSize) {
+    protected void renderElement(VectorF screenPos, VectorF screenSize) {
         sketch.stroke(strokeColor);
         sketch.strokeWeight(strokeWeight);
 
@@ -165,7 +165,7 @@ public class InputBox extends UIElement {
         caretBlinkTime = 0;
     }
 
-    private void drawCaret(PVector screenPos, PVector screenSize, int blinkInterval){
+    private void drawCaret(VectorF screenPos, VectorF screenSize, int blinkInterval){
         if (caretBlinkTime % blinkInterval < blinkInterval/2) {
             sketch.rect(screenPos.x - screenSize.x/2 + margin*sketch.width + sketch.textWidth(value.substring(0, caretPos)),
                     screenPos.y,

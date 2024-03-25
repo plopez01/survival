@@ -11,6 +11,7 @@ import me.plopez.survivalgame.rendering.World;
 import me.plopez.survivalgame.server.GameServer;
 import me.plopez.survivalgame.ui.ConnectUI;
 import me.plopez.survivalgame.util.StartupOptions;
+import me.plopez.survivalgame.vector.VectorF;
 import processing.core.*;
 import processing.event.MouseEvent;
 
@@ -82,7 +83,7 @@ public class Survival extends PApplet {
         if (mainCanvas != null) mainCanvas.render();
     }
 
-    PVector holdOrigin = new PVector();
+    VectorF holdOrigin = new VectorF();
 
     //TODO we should move GameClient related events and maybe implement some type of event subscription system
     public void mouseWheel(MouseEvent event) {
@@ -91,7 +92,7 @@ public class Survival extends PApplet {
 
     public void mousePressed() {
         if (focusedElement != null) focusedElement.onMousePressed(Mouse.relativePos());
-        holdOrigin = new PVector(mouseX, mouseY);
+        holdOrigin = new VectorF(mouseX, mouseY);
     }
 
     public void mouseReleased() {
@@ -111,14 +112,14 @@ public class Survival extends PApplet {
     }
 
     public void mouseDragged() {
-        PVector mousePos = new PVector(mouseX, mouseY);
-        PVector displacement = mousePos.sub(holdOrigin);
+        VectorF mousePos = new VectorF(mouseX, mouseY);
+        VectorF displacement = mousePos.sub(holdOrigin);
 
         if (focusedElement != null) focusedElement.onMouseDragged(displacement);
 
-        if (client != null) client.camera.translate(client.camera.toWorldSpace(PVector.mult(displacement, -1)));
+        if (client != null) client.camera.translate(client.camera.toWorldSpace(VectorF.mult(displacement, -1)));
 
-        holdOrigin = new PVector(mouseX, mouseY);
+        holdOrigin = new VectorF(mouseX, mouseY);
     }
 
     @Override

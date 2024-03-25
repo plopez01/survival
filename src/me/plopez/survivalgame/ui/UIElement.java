@@ -2,7 +2,7 @@ package me.plopez.survivalgame.ui;
 
 import me.plopez.survivalgame.rendering.Renderable;
 import me.plopez.survivalgame.util.Vector;
-import processing.core.PVector;
+import me.plopez.survivalgame.vector.VectorF;
 
 import static me.plopez.survivalgame.Globals.focusedElement;
 import static me.plopez.survivalgame.Globals.sketch;
@@ -10,18 +10,18 @@ import static processing.core.PConstants.CENTER;
 import static processing.core.PConstants.CORNER;
 
 public abstract class UIElement implements Renderable {
-    PVector position;
-    PVector size;
+    VectorF position;
+    VectorF size;
     VerticalAlignment verticalAlignment = VerticalAlignment.Top;
     HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left;
     int drawOrigin = CORNER;
 
-    UIElement(PVector position, PVector size){
+    UIElement(VectorF position, VectorF size){
         this.position = position;
         this.size = size;
     }
 
-    UIElement(PVector position, PVector size, int drawOrigin){
+    UIElement(VectorF position, VectorF size, int drawOrigin){
         this.position = position;
         this.size = size;
         this.drawOrigin = drawOrigin;
@@ -35,10 +35,10 @@ public abstract class UIElement implements Renderable {
         horizontalAlignment = alignment;
     }
 
-    protected abstract void renderElement(PVector screenPos, PVector screenSize);
+    protected abstract void renderElement(VectorF screenPos, VectorF screenSize);
 
-    public PVector getScreenPosition(){
-        PVector elementPosition = new PVector();
+    public VectorF getScreenPosition(){
+        VectorF elementPosition = new VectorF();
 
         elementPosition.x = switch (horizontalAlignment) {
             case Left -> position.x*sketch.width;
@@ -55,14 +55,14 @@ public abstract class UIElement implements Renderable {
         return elementPosition;
     }
 
-    public PVector getScreenSize(){
-        return PVector.mult(size, sketch.height);
+    public VectorF getScreenSize(){
+        return VectorF.mult(size, sketch.height);
     }
 
-    public boolean hitTest(PVector screenPos) {
+    public boolean hitTest(VectorF screenPos) {
         return switch (drawOrigin){
             case CORNER -> Vector.boxCast(screenPos, getScreenPosition(), getScreenSize());
-            case CENTER -> Vector.boxCast(screenPos, PVector.sub(getScreenPosition(), PVector.div(getScreenSize(), 2)), getScreenSize());
+            case CENTER -> Vector.boxCast(screenPos, VectorF.sub(getScreenPosition(), VectorF.div(getScreenSize(), 2)), getScreenSize());
             default -> false;
         };
     }
@@ -77,10 +77,10 @@ public abstract class UIElement implements Renderable {
         return focusedElement == element && sketch.focused;
     }
 
-    public void onClick(PVector position){}
-    public void onMousePressed(PVector position){}
-    public void onMouseReleased(PVector position){}
-    public void onMouseDragged(PVector displacement){}
+    public void onClick(VectorF position){}
+    public void onMousePressed(VectorF position){}
+    public void onMouseReleased(VectorF position){}
+    public void onMouseDragged(VectorF displacement){}
 
     public void onKeyPressed(char key){}
     public void onKeyReleased(char key){}

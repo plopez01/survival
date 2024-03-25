@@ -2,7 +2,7 @@ package me.plopez.survivalgame.ui;
 
 import me.plopez.survivalgame.rendering.Renderable;
 import me.plopez.survivalgame.util.Vector;
-import processing.core.PVector;
+import me.plopez.survivalgame.vector.VectorF;
 
 import java.util.ArrayList;
 
@@ -16,11 +16,11 @@ public class Canvas implements Renderable {
         elements.add(element);
     }
 
-    public void onClick(PVector mousePos){
+    public void onClick(VectorF mousePos){
         for (var uiElement : elements) {
             if (uiElement.hitTest(mousePos)) {
                 focusedElement = uiElement;
-                uiElement.onClick(PVector.sub(mousePos, uiElement.getScreenPosition()));
+                uiElement.onClick(VectorF.sub(mousePos, uiElement.getScreenPosition()));
                 return;
             }
         }

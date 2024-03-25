@@ -1,21 +1,21 @@
 package me.plopez.survivalgame.input;
 
+import me.plopez.survivalgame.vector.VectorF;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import static me.plopez.survivalgame.Globals.sketch;
 
 public class Mouse {
-    public static PVector mousePos(){
-        return new PVector(sketch.mouseX, sketch.mouseY);
+    public static VectorF mousePos(){
+        return new VectorF(sketch.mouseX, sketch.mouseY);
     }
 
-    public static PVector relativePos(){
-        return new PVector((float) sketch.mouseX / sketch.width, (float) sketch.mouseY / sketch.height);
+    public static VectorF relativePos(){
+        return new VectorF((float) sketch.mouseX / sketch.width, (float) sketch.mouseY / sketch.height);
     }
 
-    public static PVector getMouseDistFromCenter(PApplet sketch) {
-        return new PVector(
+    public static VectorF getMouseDistFromCenter(PApplet sketch) {
+        return new VectorF(
                 (float) (sketch.mouseX - sketch.width / 2 ) / sketch.width,
                 (float) (sketch.mouseY - sketch.height / 2) / sketch.height);
     }

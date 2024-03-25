@@ -2,8 +2,8 @@ package me.plopez.survivalgame.rendering;
 
 import me.plopez.survivalgame.objects.Camera;
 import me.plopez.survivalgame.objects.WorldObject;
+import me.plopez.survivalgame.vector.VectorF;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import static me.plopez.survivalgame.Globals.sketch;
 
@@ -22,7 +22,7 @@ public class CameraRenderer extends Renderer {
     protected void renderRenderable(Renderable renderable) {
         if (renderable instanceof WorldObject worldObject) {
 
-            PVector screenSpace = cam.toRelativeScreenSpace(worldObject.transform);
+            VectorF screenSpace = cam.toRelativeScreenSpace(worldObject.transform);
 
             sketch.strokeWeight(sketch.g.strokeWeight / screenSpace.z);
             sketch.translate(screenSpace.x, screenSpace.y);

@@ -1,7 +1,7 @@
 package me.plopez.survivalgame.log;
 
+import me.plopez.survivalgame.vector.VectorF;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import static processing.core.PConstants.*;
 
@@ -17,7 +17,7 @@ public class Debug {
         debugText += "\n" + key + ": " + value;
     }
 
-    public void add(String key, PVector vec) {
+    public void add(String key, VectorF vec) {
         debugText += "\n" + key + ": (" + vec.x + ", " + vec.y + ", " + vec.z + ")";
     }
 

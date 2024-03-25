@@ -9,8 +9,8 @@ import me.plopez.survivalgame.network.Client;
 import me.plopez.survivalgame.network.Server;
 import me.plopez.survivalgame.network.packet.*;
 import me.plopez.survivalgame.rendering.World;
+import me.plopez.survivalgame.vector.VectorF;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import java.io.IOException;
 
@@ -59,7 +59,7 @@ public class GameServer extends Server {
                         MoveCommand moveCommand = (MoveCommand) inPacket;
 
                         Entity entity = world.getEntity(moveCommand.entityID);
-                        entity.transform.set(new PVector(-moveCommand.target.x, -moveCommand.target.y, entity.transform.z));
+                        entity.transform.set(new VectorF(-moveCommand.target.x, -moveCommand.target.y, entity.transform.z));
 
                         broadcast(inPacket);
                     }

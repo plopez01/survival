@@ -4,7 +4,7 @@ import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.objects.WorldObject;
 import me.plopez.survivalgame.util.RangeConstrain;
 import me.plopez.survivalgame.util.Vector;
-import processing.core.PVector;
+import me.plopez.survivalgame.vector.VectorF;
 import processing.core.PApplet;
 
 import static me.plopez.survivalgame.Globals.sketch;
@@ -45,43 +45,43 @@ public class Camera extends WorldObject {
         float newZoom = zoom + change * zoomSensitivity;
 
         if (zoomConstrain.inBounds(newZoom)) {
-            PVector mouseTarget = getWorldMouse();
+            VectorF mouseTarget = getWorldMouse();
 
             zoom = newZoom;
 
-            PVector newMouseTarget = getWorldMouse();
+            VectorF newMouseTarget = getWorldMouse();
 
             transform.add(mouseTarget.sub(newMouseTarget));
         }
     }
 
-    PVector getWorldMouse() {
+    VectorF getWorldMouse() {
         return Vector.multiplyVectors(Mouse.getMouseDistFromCenter(sketch), getWorldViewportSize());
     }
 
-    public PVector getRelativeWorldMouse() {
+    public VectorF getRelativeWorldMouse() {
         return getWorldMouse().add(transform);
     }
 
-    PVector getWorldViewportSize() {
-        return toWorldSpace(new PVector(sketch.width, sketch.height));
+    VectorF getWorldViewportSize() {
+        return toWorldSpace(new VectorF(sketch.width, sketch.height));
     }
 
-    public PVector toScreenSpace(PVector in) {
-        return new PVector(in.x * zoom * resolution, in.y * zoom * resolution, in.z * zoom * resolution);
+    public VectorF toScreenSpace(VectorF in) {
+        return new VectorF(in.x * zoom * resolution, in.y * zoom * resolution, in.z * zoom * resolution);
     }
 
-    public PVector toWorldSpace(PVector in) {
-        return new PVector(in.x / (zoom * resolution), in.y / (zoom * resolution), in.z / (zoom * resolution));
+    public VectorF toWorldSpace(VectorF in) {
+        return new VectorF(in.x / (zoom * resolution), in.y / (zoom * resolution), in.z / (zoom * resolution));
     }
 
-    public PVector toRelativeScreenSpace(PVector in) {
-        PVector newPos = new PVector(-transform.x + in.x, -transform.y + in.y, transform.z + in.z);
-        PVector screenSpace = toScreenSpace(newPos);
-        return new PVector(screenSpace.x + ((float) sketch.width / 2), screenSpace.y + ((float) sketch.height / 2), screenSpace.z);
+    public VectorF toRelativeScreenSpace(VectorF in) {
+        VectorF newPos = new VectorF(-transform.x + in.x, -transform.y + in.y, transform.z + in.z);
+        VectorF screenSpace = toScreenSpace(newPos);
+        return new VectorF(screenSpace.x + ((float) sketch.width / 2), screenSpace.y + ((float) sketch.height / 2), screenSpace.z);
     }
 
-    public void translate(PVector vec) {
+    public void translate(VectorF vec) {
         transform.add(vec);
     }
 }

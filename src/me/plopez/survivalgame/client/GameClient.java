@@ -11,8 +11,7 @@ import me.plopez.survivalgame.network.packet.*;
 import me.plopez.survivalgame.objects.Camera;
 import me.plopez.survivalgame.rendering.*;
 import me.plopez.survivalgame.util.RangeConstrain;
-
-import processing.core.PVector;
+import me.plopez.survivalgame.vector.VectorF;
 
 import java.io.IOException;
 
@@ -113,7 +112,7 @@ public class GameClient extends Client {
         return camera;
     }
 
-    public void onClick(PVector pos) {
+    public void onClick(VectorF pos) {
         MoveCommand cmd = new MoveCommand(getMyPlayer().getId(), getCamera().getRelativeWorldMouse());
         try {
             output.write(cmd.serialize());

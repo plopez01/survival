@@ -1,12 +1,12 @@
 package me.plopez.survivalgame.objects;
 
-import processing.core.PVector;
 
 import java.io.Serializable;
 import java.util.UUID;
+import me.plopez.survivalgame.vector.VectorF;
 
 public abstract class WorldObject implements Serializable {
-    public PVector transform = new PVector();
+    public VectorF transform = new VectorF();
     private final UUID id = UUID.randomUUID();
 
     public WorldObject() {
@@ -14,7 +14,7 @@ public abstract class WorldObject implements Serializable {
         transform.z = 1;
     }
 
-    public void translate(PVector vec) {
+    public void translate(VectorF vec) {
         transform.x += vec.x;
         transform.y += vec.y;
     }
