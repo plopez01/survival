@@ -5,6 +5,7 @@ import me.plopez.survivalgame.objects.entities.Entity;
 import me.plopez.survivalgame.objects.entities.Player;
 import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.objects.WorldObject;
+import processing.core.PVector;
 
 import java.io.Serializable;
 import java.util.*;
@@ -21,7 +22,9 @@ public class World implements Serializable {
         this.seed = seed;
         this.terrain = terrain;
 
-        addObject(new Tree());
+        Tree tree = new Tree();
+        tree.translate(new PVector(1, 0));
+        addObject(tree);
     }
 
     public World(int seed, Terrain terrain, List<WorldObject> worldObjects){

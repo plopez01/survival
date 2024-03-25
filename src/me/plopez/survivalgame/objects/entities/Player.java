@@ -28,7 +28,7 @@ public class Player extends Entity implements Renderable {
     }
 
     public void commandMove(PVector to) {
-        target = new PVector(-to.x, -to.y);
+        target = new PVector(to.x, to.y);
         startPos = new PVector(transform.x, transform.y);
         startCommandTime = sketch.millis();
         targetDistance = PVector.dist(startPos, target) * speed;
