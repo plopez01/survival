@@ -1,6 +1,5 @@
-package me.plopez.survivalgame.objects.entities;
+package me.plopez.survivalgame.objects.entity;
 
-import me.plopez.survivalgame.objects.WorldObject;
 import me.plopez.survivalgame.rendering.Renderable;
 import processing.core.PVector;
 

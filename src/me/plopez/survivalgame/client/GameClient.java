@@ -1,8 +1,8 @@
 package me.plopez.survivalgame.client;
 
 import me.plopez.survivalgame.Survival;
-import me.plopez.survivalgame.objects.entities.Entity;
-import me.plopez.survivalgame.objects.entities.Player;
+import me.plopez.survivalgame.objects.entity.Entity;
+import me.plopez.survivalgame.objects.entity.Player;
 import me.plopez.survivalgame.exception.DuplicatePlayerException;
 import me.plopez.survivalgame.log.Logger;
 import me.plopez.survivalgame.log.LoggingLevel;
