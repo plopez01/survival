@@ -20,7 +20,7 @@ public abstract class WorldObject implements Serializable {
     }
 
     public void scale(float value) {
-        transform.z += value;
+        transform.z *= value;
     }
 
     public UUID getId() {

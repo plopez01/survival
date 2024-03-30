@@ -30,7 +30,8 @@ public class World implements Serializable {
         addObject(tree);
 
         WorldBorder border = new WorldBorder();
-        border.scale(terrain.getSurfaceRadius());
+        System.out.println(terrain.getSurfaceRadius());
+        border.scale(terrain.getSurfaceRadius()*2);
         addObject(border);
     }
 
@@ -64,7 +65,7 @@ public class World implements Serializable {
     {
         if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
         players.put(player.getName(), player);
-        addObject(player);
+        //addObject(player);
     }
 
     public void removePlayer(Player player) {

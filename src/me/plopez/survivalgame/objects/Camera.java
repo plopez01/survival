@@ -76,7 +76,7 @@ public class Camera extends WorldObject {
     }
 
     public PVector toRelativeScreenSpace(PVector in) {
-        PVector newPos = new PVector(-transform.x + in.x, -transform.y + in.y, transform.z + in.z);
+        PVector newPos = new PVector(-transform.x + in.x, -transform.y + in.y, in.z);
         PVector screenSpace = toScreenSpace(newPos);
         return new PVector(screenSpace.x + ((float) sketch.width / 2), screenSpace.y + ((float) sketch.height / 2), screenSpace.z);
     }

@@ -10,7 +10,7 @@ import static processing.core.PConstants.CORNER;
 public class WorldBorder extends WorldObject implements Renderable {
     public void render() {
         sketch.rectMode(CENTER);
-        sketch.fill(255, 0, 0);
+        sketch.fill(255, 0, 0, 50);
         sketch.square(0, 0, 1);
         sketch.rectMode(CORNER);
     }
