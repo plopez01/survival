@@ -1,17 +1,15 @@
 package me.plopez.survivalgame.log;
 
-import processing.core.PApplet;
+import me.plopez.survivalgame.objects.debug.WorldBorder;
+import me.plopez.survivalgame.rendering.CameraRenderer;
+import me.plopez.survivalgame.rendering.World;
 import processing.core.PVector;
 
+import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PConstants.*;
 
 public class Debug {
-    PApplet sketch;
     String debugText;
-
-    public Debug(PApplet sketch) {
-        this.sketch = sketch;
-    }
 
     public void add(String key, Object value) {
         debugText += "\n" + key + ": " + value;
@@ -27,7 +25,6 @@ public class Debug {
         sketch.square((float) sketch.width / 2, (float) sketch.height / 2, 10);
         sketch.rectMode(CORNER);
     }
-
     public void render() {
         sketch.fill(255);
         sketch.textSize(16);

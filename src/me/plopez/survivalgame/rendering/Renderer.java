@@ -35,10 +35,14 @@ public class Renderer implements Renderable {
 
     public void render(List<Renderable> renderables) {
         for (Renderable renderable : renderables) {
-            sketch.pushMatrix();
-            renderRenderable(renderable);
-            sketch.popMatrix();
+            render(renderable);
         }
+    }
+
+    public void render(Renderable renderable) {
+        sketch.pushMatrix();
+        renderRenderable(renderable);
+        sketch.popMatrix();
     }
 
     public void renderText() {

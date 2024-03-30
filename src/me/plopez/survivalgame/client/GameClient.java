@@ -113,6 +113,10 @@ public class GameClient extends Client {
         return camera;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
     public void onClick(PVector pos) {
         MoveCommand cmd = new MoveCommand(getMyPlayer().getId(), getCamera().getRelativeWorldMouse());
         try {

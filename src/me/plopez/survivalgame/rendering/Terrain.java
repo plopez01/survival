@@ -33,7 +33,7 @@ public class Terrain implements Serializable {
                 sketch.noiseDetail(PApplet.round(zoomDetail * cam.getZoomPosition()) + baseDetail);
 
                 float distanceFromOrigin = (abs(x / cam.getZoom()) + abs(y / cam.getZoom())) / terrainSize + heightOffset;
-                float terrainHeight = sketch.noise(x / cam.getZoom() + translationOffset, y / cam.getZoom() + translationOffset) / distanceFromOrigin;
+                float terrainHeight = 1 / distanceFromOrigin;
 
                 if (colorRegion(terrainHeight, sketch.color(0, 0, 255), sketch.color(70, 70, 255), 0, 0.3f)) ;
                 else if (colorRegion(terrainHeight, sketch.color(70, 70, 255), sketch.color(200, 200, 100), 0.3f, 0.35f))
@@ -47,6 +47,12 @@ public class Terrain implements Serializable {
                 sketch.rect(xoff * cam.getResolution(), yoff * cam.getResolution(), cam.getResolution(), cam.getResolution());
             }
         }
+    }
+
+    // 0.3f in this function is the hardcoded sea value
+    // 1 is the maxmimum value of the noise function
+    public float getSurfaceRadius(){
+        return terrainSize * (1/0.3f - heightOffset);
     }
 
     boolean colorRegion(float terrainHeight, int cfrom, int cto, float from, float to) {

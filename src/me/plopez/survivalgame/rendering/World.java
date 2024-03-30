@@ -1,6 +1,7 @@
 package me.plopez.survivalgame.rendering;
 
-import me.plopez.survivalgame.objects.Tree;
+import me.plopez.survivalgame.objects.cell.Tree;
+import me.plopez.survivalgame.objects.debug.WorldBorder;
 import me.plopez.survivalgame.objects.entity.Entity;
 import me.plopez.survivalgame.objects.entity.Player;
 import me.plopez.survivalgame.exception.DuplicatePlayerException;
@@ -16,7 +17,9 @@ public class World implements Serializable {
     Map<UUID, WorldObject> worldObjectsMap = new HashMap<>();
     List<Renderable> renderables = new ArrayList<>();
     Map<String, Player> players = new HashMap<>();
+
     Terrain terrain;
+
 
     public World(int seed, Terrain terrain){
         this.seed = seed;
@@ -25,11 +28,14 @@ public class World implements Serializable {
         Tree tree = new Tree();
         tree.translate(new PVector(1, 0));
         addObject(tree);
+
+        WorldBorder border = new WorldBorder();
+        border.scale(terrain.getSurfaceRadius());
+        addObject(border);
     }
 
     public World(int seed, Terrain terrain, List<WorldObject> worldObjects){
-        this.seed = seed;
-        this.terrain = terrain;
+        this(seed, terrain);
         this.worldObjects = worldObjects;
     }
 

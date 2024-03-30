@@ -68,11 +68,11 @@ public class Camera extends WorldObject {
     }
 
     public PVector toScreenSpace(PVector in) {
-        return new PVector(in.x * zoom * resolution, in.y * zoom * resolution, in.z * zoom * resolution);
+        return PVector.mult(in, zoom * resolution);
     }
 
     public PVector toWorldSpace(PVector in) {
-        return new PVector(in.x / (zoom * resolution), in.y / (zoom * resolution), in.z / (zoom * resolution));
+        return PVector.div(in, zoom * resolution);
     }
 
     public PVector toRelativeScreenSpace(PVector in) {

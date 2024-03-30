@@ -5,7 +5,6 @@ import me.plopez.survivalgame.client.GameClient;
 import me.plopez.survivalgame.client.SeedManager;
 import me.plopez.survivalgame.input.Mouse;
 import me.plopez.survivalgame.log.Debug;
-import me.plopez.survivalgame.network.packet.MoveCommand;
 import me.plopez.survivalgame.rendering.Terrain;
 import me.plopez.survivalgame.rendering.World;
 import me.plopez.survivalgame.server.GameServer;
@@ -21,7 +20,7 @@ import static me.plopez.survivalgame.Globals.mainCanvas;
 
 public class Survival extends PApplet {
 
-    Debug debug = new Debug(this);
+    Debug debug = new Debug();
     //TODO migrate to static class
     public SeedManager seedManager = new SeedManager(this);
     StartupOptions startupOptions;
@@ -47,7 +46,7 @@ public class Survival extends PApplet {
         background(0);
 
         if (startupOptions.isHost()) {
-            World world = new World(seedManager.getSeed(), new Terrain(4, 5000, 0.5f, 5, 5));
+            World world = new World(seedManager.getSeed(), new Terrain(1, 5000, 0.5f, 5, 5));
             server = new GameServer(this, 5000, world);
             server.log.info("Server started at port " + server.getPort());
         }
