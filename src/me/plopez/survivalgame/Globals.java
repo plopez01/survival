@@ -8,6 +8,8 @@ import processing.core.PSketch;
 public class Globals {
     public static PApplet sketch;
 
+    public static float coordinateScalar = 100f;
+
     public static Canvas mainCanvas;
 
     public static UIElement focusedElement;

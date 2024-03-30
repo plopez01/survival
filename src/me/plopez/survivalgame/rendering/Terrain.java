@@ -5,6 +5,7 @@ import processing.core.PApplet;
 
 import java.io.Serializable;
 
+import static me.plopez.survivalgame.Globals.coordinateScalar;
 import static me.plopez.survivalgame.Globals.sketch;
 import static processing.core.PApplet.abs;
 
@@ -27,13 +28,13 @@ public class Terrain implements Serializable {
         sketch.stroke(255, 20);
         for (int xoff = 0; xoff < sketch.width / cam.getResolution(); xoff++) {
             for (int yoff = 0; yoff < sketch.height / cam.getResolution(); yoff++) {
-                float x = (cam.transform.x * cam.getZoom() + xoff) - ((float) sketch.width / cam.getResolution() / 2);
-                float y = (cam.transform.y * cam.getZoom() + yoff) - ((float) sketch.height / cam.getResolution() / 2);
+                float x = (cam.transform.x * cam.getZoom() / coordinateScalar + xoff) - ((float) sketch.width / cam.getResolution() / 2);
+                float y = (cam.transform.y * cam.getZoom() / coordinateScalar + yoff) - ((float) sketch.height / cam.getResolution() / 2);
 
                 sketch.noiseDetail(PApplet.round(zoomDetail * cam.getZoomPosition()) + baseDetail);
 
                 float distanceFromOrigin = (abs(x / cam.getZoom()) + abs(y / cam.getZoom())) / terrainSize + heightOffset;
-                float terrainHeight = 1 / distanceFromOrigin;
+                float terrainHeight = sketch.noise(x / cam.getZoom() + translationOffset, y / cam.getZoom() + translationOffset) / distanceFromOrigin;
 
                 if (colorRegion(terrainHeight, sketch.color(0, 0, 255), sketch.color(70, 70, 255), 0, 0.3f)) ;
                 else if (colorRegion(terrainHeight, sketch.color(70, 70, 255), sketch.color(200, 200, 100), 0.3f, 0.35f))
@@ -52,7 +53,7 @@ public class Terrain implements Serializable {
     // 0.3f in this function is the hardcoded sea value
     // 1 is the maxmimum value of the noise function
     public float getSurfaceRadius(){
-        return terrainSize * (1/0.3f - heightOffset);
+        return terrainSize * (1/0.3f - heightOffset) * coordinateScalar;
     }
 
     boolean colorRegion(float terrainHeight, int cfrom, int cto, float from, float to) {

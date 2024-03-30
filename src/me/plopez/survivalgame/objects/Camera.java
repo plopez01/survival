@@ -7,6 +7,7 @@ import me.plopez.survivalgame.util.Vector;
 import processing.core.PVector;
 import processing.core.PApplet;
 
+import static me.plopez.survivalgame.Globals.coordinateScalar;
 import static me.plopez.survivalgame.Globals.sketch;
 
 public class Camera extends WorldObject {
@@ -68,11 +69,11 @@ public class Camera extends WorldObject {
     }
 
     public PVector toScreenSpace(PVector in) {
-        return PVector.mult(in, zoom * resolution);
+        return PVector.mult(in, zoom * resolution / coordinateScalar);
     }
 
     public PVector toWorldSpace(PVector in) {
-        return PVector.div(in, zoom * resolution);
+        return PVector.div(in, zoom * resolution / coordinateScalar);
     }
 
     public PVector toRelativeScreenSpace(PVector in) {

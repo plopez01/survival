@@ -46,7 +46,7 @@ public class Survival extends PApplet {
         background(0);
 
         if (startupOptions.isHost()) {
-            World world = new World(seedManager.getSeed(), new Terrain(1, 5000, 0.5f, 5, 5));
+            World world = new World(seedManager.getSeed(), new Terrain(4, 5000, 0.5f, 5, 5));
             server = new GameServer(this, 5000, world);
             server.log.info("Server started at port " + server.getPort());
         }
