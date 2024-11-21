@@ -42,7 +42,7 @@ public class Survival extends PApplet {
             windowMove(startupOptions.xScreen(), startupOptions.yScreen());
 
         System.out.println("Starting game.");
-
+        System.out.println(g.strokeWeight);
         background(0);
 
         if (startupOptions.isHost()) {

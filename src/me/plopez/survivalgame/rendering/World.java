@@ -65,7 +65,7 @@ public class World implements Serializable {
     {
         if (players.containsKey(player.getName())) throw new DuplicatePlayerException();
         players.put(player.getName(), player);
-        //addObject(player);
+        addObject(player);
     }
 
     public void removePlayer(Player player) {
