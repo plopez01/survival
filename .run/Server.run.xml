@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Server" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="me.plopez.survivalgame.Survival" />
+    <module name="survival" />
+    <option name="PROGRAM_PARAMETERS" value="--server --xwindow 1000 --ywindow 250" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
