@@ -9,9 +9,9 @@ public class PacketInputStream extends ObjectInputStream {
         super(in);
     }
 
-    public Object readPackedObject() throws IOException{
+    public NetworkPacket readPacket() throws IOException{
         try {
-            return readObject();
+            return (NetworkPacket) readObject();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -1,28 +1,23 @@
 package me.plopez.survivalgame.network.packet;
 
+import me.plopez.survivalgame.client.GameClient;
+import me.plopez.survivalgame.network.Client;
+import me.plopez.survivalgame.server.GameServer;
+
 import java.io.*;
 
-public abstract class NetworkPacket {
-    PacketType type;
+public abstract class NetworkPacket implements Serializable {
 
-    protected NetworkPacket(PacketType type) {
-        this.type = type;
-    }
-
-    protected abstract void writeTo(ObjectOutputStream stream) throws IOException;
+    public abstract void handleClient(GameClient client);
+    public abstract void handleServer(GameServer server, Client client);
 
     public byte[] serialize() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try (ObjectOutputStream os = new ObjectOutputStream(baos)) {
-            os.writeByte((byte) type.ordinal());
-            writeTo(os);
+            os.writeObject(this);
         }
 
         return baos.toByteArray();
-    }
-
-    public PacketType getType() {
-        return type;
     }
 }

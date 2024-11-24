@@ -1,29 +1,31 @@
 package me.plopez.survivalgame.network.packet;
 
+import me.plopez.survivalgame.client.GameClient;
+import me.plopez.survivalgame.network.Client;
+import me.plopez.survivalgame.objects.entity.Entity;
+import me.plopez.survivalgame.server.GameServer;
 import processing.core.PVector;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.UUID;
 
-public class MoveCommand extends NetworkPacket {
+public class MoveCommand extends BroadcastPacket {
     public UUID entityID;
     public PVector target;
     public MoveCommand(UUID entityID, PVector target) {
-        super(PacketType.MOVE_COMMAND);
         this.entityID = entityID;
         this.target = target;
     }
 
-    public MoveCommand(PacketInputStream pis) throws IOException {
-        super(PacketType.MOVE_COMMAND);
-        entityID = (UUID) pis.readPackedObject();
-        target = (PVector) pis.readPackedObject();
+    @Override
+    public void handleClient(GameClient client) {
+        Entity entity = client.getWorld().getEntity(entityID);
+        entity.commandMove(target);
     }
 
     @Override
-    protected void writeTo(ObjectOutputStream stream) throws IOException {
-        stream.writeObject(entityID);
-        stream.writeObject(target);
+    public void handleServer(GameServer server, Client client) {
+        Entity entity = server.getWorld().getEntity(entityID);
+
+        entity.transform.set(new PVector(-target.x, -target.y, entity.transform.z));
     }
 }

@@ -35,7 +35,8 @@ public class GameClient extends Client {
             // Server handshake
             PacketInputStream is = new PacketInputStream(input);
 
-            WorldData worldData = (WorldData) PacketType.getType(is.readByte()).makePacket(is);
+            // TODO: make this safer casting here might result unreliable, or not idk
+            WorldData worldData = (WorldData) is.readPacket();
             world = worldData.world;
             ((Survival) sketch).seedManager.setSeed(worldData.world.getSeed());
 
@@ -63,33 +64,11 @@ public class GameClient extends Client {
         try {
             if (input.available() <= 0) return;
             PacketInputStream is = new PacketInputStream(input);
-            NetworkPacket inPacket = PacketType.getType(is.readByte()).makePacket(is);
+            NetworkPacket inPacket = is.readPacket();
 
-            log.debug("Incoming packet " + inPacket.getType());
+            log.debug("Incoming packet " + inPacket.getClass().getName());
 
-            switch (inPacket.getType()){
-                case CLIENT_CONNECT -> {
-                    ClientConnect clientConnect = (ClientConnect) inPacket;
-
-                    try {
-                        registerPlayer(clientConnect.player);
-                    } catch (DuplicatePlayerException e) {
-                        log.warn("Client tried to register an already existing player.");
-                    }
-                }
-                case MOVE_COMMAND -> {
-                    MoveCommand moveCommand = (MoveCommand) inPacket;
-                    Entity entity = world.getEntity(moveCommand.entityID);
-                    entity.commandMove(moveCommand.target);
-                }
-                case CLIENT_DISCONNECT -> {
-                    ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
-
-                    Player localPlayer = world.getPlayer(clientDisconnect.player.getName());
-                    removePlayer(localPlayer);
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + inPacket);
-            }
+            inPacket.handleClient(this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

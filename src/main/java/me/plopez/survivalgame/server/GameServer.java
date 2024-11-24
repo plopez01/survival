@@ -33,48 +33,23 @@ public class GameServer extends Server {
         return port;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
     public void tick() {
         try {
             Client client = available();
             while (client != null) {
                 PacketInputStream is = new PacketInputStream(client.input);
-                NetworkPacket inPacket = PacketType.getType(is.readByte()).makePacket(is);
+                NetworkPacket inPacket = is.readPacket();
 
-                log.debug("Incoming packet " + inPacket.getType());
+                log.debug("Incoming packet " + inPacket.getClass().getName());
 
-                switch (inPacket.getType()){
-                    case CLIENT_CONNECT -> {
-                        ClientConnect clientConnect = (ClientConnect) inPacket;
-                        try {
-                            registerPlayer(clientConnect.player);
-                            broadcast(inPacket);
-                        } catch (DuplicatePlayerException e) {
-                            log.warn("Client (" + client.ip() + ") tried to connect with name "
-                                    + clientConnect.player.getName() +
-                                    " but another player with the same name already exists.");
-                            disconnect(client);
-                        }
-                    }
-                    case MOVE_COMMAND -> {
-                        MoveCommand moveCommand = (MoveCommand) inPacket;
+                inPacket.handleServer(this, client);
 
-                        Entity entity = world.getEntity(moveCommand.entityID);
-                        entity.transform.set(new PVector(-moveCommand.target.x, -moveCommand.target.y, entity.transform.z));
-
-                        broadcast(inPacket);
-                    }
-                    case CLIENT_DISCONNECT -> {
-                        ClientDisconnect clientDisconnect = (ClientDisconnect) inPacket;
-
-                        Player localPlayer = world.getPlayer(clientDisconnect.player.getName());
-                        removePlayer(localPlayer);
-
-                        disconnect(client);
-
-                        echoToOthers(inPacket, client);
-                    }
-                    default -> throw new IllegalStateException("Unexpected value: " + inPacket);
-                }
+                if (inPacket instanceof BroadcastPacket) broadcast(inPacket);
+                if (inPacket instanceof ForwardPacket) echoToOthers(inPacket, client);
 
                 client = available();
             }
