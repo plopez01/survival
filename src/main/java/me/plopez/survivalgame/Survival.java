@@ -74,6 +74,9 @@ public class Survival extends PApplet {
             debug.add("Zoom", client.camera.getZoom());
             debug.add("ScreenMouse", Mouse.getMouseDistFromCenter(this));
             debug.add("WorldMouse", client.camera.getRelativeWorldMouse());
+
+            PVector mouse = client.camera.getRelativeWorldMouse();
+            debug.add("HeightMouse", client.getWorld().getTerrain().getHeight(client.getMyPlayer().transform));
             //debug.showPointer();
         }
 

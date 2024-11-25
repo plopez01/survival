@@ -46,6 +46,7 @@ public class Player extends Entity implements Renderable {
             PVector newPos = PVector.lerp(startPos, target, comandProgress);
             transform.x = newPos.x;
             transform.y = newPos.y;
+            System.out.println(transform);
         }
     }
 

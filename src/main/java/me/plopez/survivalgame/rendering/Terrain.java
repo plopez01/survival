@@ -2,6 +2,7 @@ package me.plopez.survivalgame.rendering;
 
 import me.plopez.survivalgame.objects.Camera;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import java.io.Serializable;
 
@@ -33,8 +34,7 @@ public class Terrain implements Serializable {
 
                 sketch.noiseDetail(PApplet.round(zoomDetail * cam.getZoomPosition()) + baseDetail);
 
-                float distanceFromOrigin = (abs(x / cam.getZoom()) + abs(y / cam.getZoom())) / terrainSize + heightOffset;
-                float terrainHeight = sketch.noise(x / cam.getZoom() + translationOffset, y / cam.getZoom() + translationOffset) / distanceFromOrigin;
+                float terrainHeight = getHeight(x / cam.getZoom(), y / cam.getZoom());
 
                 if (colorRegion(terrainHeight, sketch.color(0, 0, 255), sketch.color(70, 70, 255), 0, 0.3f)) ;
                 else if (colorRegion(terrainHeight, sketch.color(70, 70, 255), sketch.color(200, 200, 100), 0.3f, 0.35f))
@@ -48,6 +48,15 @@ public class Terrain implements Serializable {
                 sketch.rect(xoff * cam.getResolution(), yoff * cam.getResolution(), cam.getResolution(), cam.getResolution());
             }
         }
+    }
+
+    public float getHeight(float x, float y){
+        float distanceFromOrigin = (abs(x) + abs(y)) / terrainSize + heightOffset;
+        return sketch.noise(x + translationOffset, y + translationOffset) / distanceFromOrigin;
+    }
+
+    public float getHeight(PVector pos) {
+        return getHeight(pos.x, pos.y);
     }
 
     // 0.3f in this function is the hardcoded sea value

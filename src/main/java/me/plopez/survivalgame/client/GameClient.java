@@ -43,6 +43,10 @@ public class GameClient extends Client {
             log.debug("Handled server handshake.");
             log.info("World seed: " + world.getSeed());
 
+            /* TODO: connecting a player should not send a player instance
+                as this makes little sense because most player fields like position
+                will be set by the server. Identifying players with a UUID and sending
+                that instead should be better.*/
             ClientConnect cHandshake = new ClientConnect(myPlayer);
             output.write(cHandshake.serialize());
             log.debug("Sending connect message to server.");
@@ -76,6 +80,8 @@ public class GameClient extends Client {
 
     public void registerPlayer(Player player) throws DuplicatePlayerException {
         log.debug("Registering player " + player.getName());
+        // TODO: clean this up, get it from world download or something
+        if (player.getName().equals(myPlayer.getName())) myPlayer = player;
         world.addPlayer(player);
     }
 
