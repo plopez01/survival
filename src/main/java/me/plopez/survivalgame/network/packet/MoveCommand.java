@@ -26,6 +26,6 @@ public class MoveCommand extends BroadcastPacket {
     public void handleServer(GameServer server, Client client) {
         Entity entity = server.getWorld().getEntity(entityID);
 
-        entity.transform.set(new PVector(-target.x, -target.y, entity.transform.z));
+        entity.transform.set(new PVector(target.x, target.y, entity.transform.z));
     }
 }
