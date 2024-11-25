@@ -32,8 +32,8 @@ public class Survival extends PApplet {
     }
 
     public void settings() {
-        size(640, 480);
-        //fullScreen();
+        //size(640, 480);
+        fullScreen(1);
     }
 
     public void setup() {
@@ -76,7 +76,7 @@ public class Survival extends PApplet {
             debug.add("WorldMouse", client.camera.getRelativeWorldMouse());
 
             PVector mouse = client.camera.getRelativeWorldMouse();
-            debug.add("HeightMouse", client.getWorld().getTerrain().getHeight(client.getMyPlayer().transform));
+            debug.add("HeightMouse", client.getWorld().getTerrain().getHeight(mouse));
             //debug.showPointer();
         }
 

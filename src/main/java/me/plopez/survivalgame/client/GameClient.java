@@ -21,7 +21,7 @@ import static me.plopez.survivalgame.Globals.sketch;
 
 public class GameClient extends Client {
     public Logger log = new Logger(LoggingLevel.ALL, Logger.CYAN + "CLIENT> " + Logger.RESET);
-    public Camera camera = new Camera(16, 20, new RangeConstrain(10, 80), 1, 4);
+    public Camera camera = new Camera(32, 20, new RangeConstrain(10, 80), 1, 4);
     CameraRenderer renderer = new CameraRenderer(1, camera);
     Player myPlayer;
 

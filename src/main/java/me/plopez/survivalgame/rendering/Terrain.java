@@ -29,8 +29,8 @@ public class Terrain implements Serializable {
         sketch.stroke(255, 20);
         for (int xoff = 0; xoff < sketch.width / cam.getResolution(); xoff++) {
             for (int yoff = 0; yoff < sketch.height / cam.getResolution(); yoff++) {
-                float x = (cam.transform.x * cam.getZoom() / coordinateScalar + xoff) - ((float) sketch.width / cam.getResolution() / 2);
-                float y = (cam.transform.y * cam.getZoom() / coordinateScalar + yoff) - ((float) sketch.height / cam.getResolution() / 2);
+                float x = ((cam.transform.x * cam.getZoom() / coordinateScalar + xoff) - ((float) sketch.width / cam.getResolution() / 2)) * coordinateScalar;
+                float y = ((cam.transform.y * cam.getZoom() / coordinateScalar + yoff) - ((float) sketch.height / cam.getResolution() / 2)) * coordinateScalar;
 
                 sketch.noiseDetail(PApplet.round(zoomDetail * cam.getZoomPosition()) + baseDetail);
 
@@ -46,11 +46,16 @@ public class Terrain implements Serializable {
                 else sketch.fill(255 * terrainHeight);
 
                 sketch.rect(xoff * cam.getResolution(), yoff * cam.getResolution(), cam.getResolution(), cam.getResolution());
+                sketch.fill(0);
+                sketch.textSize(12);
+                sketch.text(Math.round(x / cam.getZoom()) + " " + Math.round(y / cam.getZoom()), xoff * cam.getResolution(), yoff * cam.getResolution());
             }
         }
     }
 
     public float getHeight(float x, float y){
+        x /= coordinateScalar;
+        y /= coordinateScalar;
         float distanceFromOrigin = (abs(x) + abs(y)) / terrainSize + heightOffset;
         return sketch.noise(x + translationOffset, y + translationOffset) / distanceFromOrigin;
     }
