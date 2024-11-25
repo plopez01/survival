@@ -66,7 +66,7 @@ public class GameClient extends Client {
             PacketInputStream is = new PacketInputStream(input);
             NetworkPacket inPacket = is.readPacket();
 
-            log.debug("Incoming packet " + inPacket.getClass().getName());
+            log.debug("Incoming packet " + inPacket.getClass().getSimpleName());
 
             inPacket.handleClient(this);
         } catch (IOException e) {

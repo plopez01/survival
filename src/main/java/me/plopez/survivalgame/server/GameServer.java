@@ -44,7 +44,7 @@ public class GameServer extends Server {
                 PacketInputStream is = new PacketInputStream(client.input);
                 NetworkPacket inPacket = is.readPacket();
 
-                log.debug("Incoming packet " + inPacket.getClass().getName());
+                log.debug("Incoming packet " + inPacket.getClass().getSimpleName());
 
                 inPacket.handleServer(this, client);
 
