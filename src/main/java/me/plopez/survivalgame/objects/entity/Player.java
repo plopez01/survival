@@ -1,6 +1,9 @@
 package me.plopez.survivalgame.objects.entity;
 
 import me.plopez.survivalgame.rendering.Renderable;
+import me.plopez.survivalgame.rendering.Terrain;
+import me.plopez.survivalgame.rendering.World;
+import processing.core.PApplet;
 import processing.core.PVector;
 
 import static me.plopez.survivalgame.Globals.sketch;
@@ -11,10 +14,10 @@ public class Player extends Entity implements Renderable {
     float speed;
     int c;
 
-    PVector target;
+    PVector target = transform;
 
     long startCommandTime;
-    float targetDistance = 1;
+    float travelledDistance = 0;
 
     PVector startPos = transform;
 
@@ -22,15 +25,13 @@ public class Player extends Entity implements Renderable {
         this.name = name;
         this.speed = speed;
         this.c = c;
-
-        target = transform;
     }
 
     public void commandMove(PVector to) {
         target = new PVector(to.x, to.y);
         startPos = new PVector(transform.x, transform.y);
         startCommandTime = sketch.millis();
-        targetDistance = PVector.dist(startPos, target) * speed;
+        travelledDistance = 0;
     }
 
     public void render() {
@@ -39,14 +40,15 @@ public class Player extends Entity implements Renderable {
         sketch.square(0, 0, 1);
         sketch.rectMode(CORNER);
 
-        long spentTime = sketch.millis() - startCommandTime;
+        float comandProgress = PApplet.constrain(travelledDistance / (PVector.dist(startPos, target)+1), 0, 1);
 
-        float comandProgress = (float) spentTime / targetDistance;
-        if (comandProgress < 1) {
-            PVector newPos = PVector.lerp(startPos, target, comandProgress);
-            transform.x = newPos.x;
-            transform.y = newPos.y;
-        }
+        System.out.println(comandProgress);
+
+        PVector newPos = PVector.lerp(startPos, target, comandProgress);
+        travelledDistance += speed / (sketch.frameRate);
+
+        transform.x = newPos.x;
+        transform.y = newPos.y;
     }
 
     public void renderText() {
