@@ -1,5 +1,6 @@
 package me.plopez.survivalgame.objects;
 
+import me.plopez.survivalgame.rendering.World;
 import processing.core.PVector;
 
 import java.io.Serializable;
@@ -25,5 +26,9 @@ public abstract class WorldObject implements Serializable {
 
     public UUID getId() {
         return id;
+    }
+
+    public void tick(World world) {
+
     }
 }

@@ -59,7 +59,9 @@ public class GameClient extends Client {
     public void tick() {
         handleIncomingPackets();
 
+        world.tick();
         world.getTerrain().renderAt(camera);
+
         renderer.render(world.getRenderables());
         renderer.render();
     }

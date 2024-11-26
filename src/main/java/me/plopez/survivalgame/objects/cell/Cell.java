@@ -1,6 +1,7 @@
 package me.plopez.survivalgame.objects.cell;
 
 import me.plopez.survivalgame.objects.WorldObject;
+import me.plopez.survivalgame.rendering.World;
 import processing.core.PVector;
 
 public class Cell extends WorldObject {

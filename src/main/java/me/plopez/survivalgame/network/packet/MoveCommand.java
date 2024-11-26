@@ -19,7 +19,7 @@ public class MoveCommand extends BroadcastPacket {
     @Override
     public void handleClient(GameClient client) {
         Entity entity = client.getWorld().getEntity(entityID);
-        entity.commandMove(target);
+        entity.setTarget(target);
     }
 
     @Override

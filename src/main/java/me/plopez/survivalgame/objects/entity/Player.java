@@ -11,27 +11,13 @@ import static processing.core.PConstants.*;
 
 public class Player extends Entity implements Renderable {
     String name;
-    float speed;
     int c;
 
-    PVector target = transform;
-
-    long startCommandTime;
-    float travelledDistance = 0;
-
-    PVector startPos = transform;
-
     public Player(String name, float speed, int c) {
-        this.name = name;
-        this.speed = speed;
-        this.c = c;
-    }
+        super(speed);
 
-    public void commandMove(PVector to) {
-        target = new PVector(to.x, to.y);
-        startPos = new PVector(transform.x, transform.y);
-        startCommandTime = sketch.millis();
-        travelledDistance = 0;
+        this.name = name;
+        this.c = c;
     }
 
     public void render() {
@@ -39,16 +25,6 @@ public class Player extends Entity implements Renderable {
         sketch.fill(c);
         sketch.square(0, 0, 1);
         sketch.rectMode(CORNER);
-
-        float comandProgress = PApplet.constrain(travelledDistance / (PVector.dist(startPos, target)+1), 0, 1);
-
-        System.out.println(comandProgress);
-
-        PVector newPos = PVector.lerp(startPos, target, comandProgress);
-        travelledDistance += speed / (sketch.frameRate);
-
-        transform.x = newPos.x;
-        transform.y = newPos.y;
     }
 
     public void renderText() {
@@ -62,4 +38,5 @@ public class Player extends Entity implements Renderable {
     public String getName() {
         return name;
     }
+
 }

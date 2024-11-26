@@ -2,6 +2,7 @@ package me.plopez.survivalgame.objects.cell;
 
 import me.plopez.survivalgame.objects.WorldObject;
 import me.plopez.survivalgame.rendering.Renderable;
+import me.plopez.survivalgame.rendering.World;
 
 import static me.plopez.survivalgame.Globals.sketch;
 

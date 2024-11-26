@@ -20,7 +20,6 @@ public class World implements Serializable {
 
     Terrain terrain;
 
-
     public World(int seed, Terrain terrain){
         this.seed = seed;
         this.terrain = terrain;
@@ -38,6 +37,12 @@ public class World implements Serializable {
     public World(int seed, Terrain terrain, List<WorldObject> worldObjects){
         this(seed, terrain);
         this.worldObjects = worldObjects;
+    }
+
+    public void tick(){
+        for (var worldObject : worldObjects) {
+            worldObject.tick(this);
+        }
     }
 
     public List<Renderable> getRenderables(){
