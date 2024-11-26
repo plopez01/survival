@@ -34,7 +34,7 @@ public class Terrain implements Serializable {
 
                 sketch.noiseDetail(PApplet.round(zoomDetail * cam.getZoomPosition()) + baseDetail);
 
-                float terrainHeight = getHeight(x / cam.getZoom(), y / cam.getZoom());
+                float terrainHeight = getNoiseHeight(x / cam.getZoom(), y / cam.getZoom());
 
                 if (colorRegion(terrainHeight, sketch.color(0, 0, 255), sketch.color(70, 70, 255), 0, 0.3f)) ;
                 else if (colorRegion(terrainHeight, sketch.color(70, 70, 255), sketch.color(200, 200, 100), 0.3f, 0.35f))
@@ -51,12 +51,16 @@ public class Terrain implements Serializable {
     }
 
     public float getHeight(float x, float y){
-        float distanceFromOrigin = (abs(x) + abs(y)) / terrainSize + heightOffset;
-        return sketch.noise(x + translationOffset, y + translationOffset) / distanceFromOrigin;
+        return getNoiseHeight(x / coordinateScalar, y / coordinateScalar);
     }
 
     public float getHeight(PVector pos) {
         return getHeight(pos.x, pos.y);
+    }
+
+    private float getNoiseHeight(float x, float y){
+        float distanceFromOrigin = (abs(x) + abs(y)) / terrainSize + heightOffset;
+        return sketch.noise(x + translationOffset, y + translationOffset) / distanceFromOrigin;
     }
 
     // 0.3f in this function is the hardcoded sea value
