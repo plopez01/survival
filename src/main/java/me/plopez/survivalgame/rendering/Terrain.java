@@ -44,7 +44,7 @@ public class Terrain implements Serializable {
                 else if (colorRegion(terrainHeight, sketch.color(40, 120, 40), sketch.color(80, 60, 60), 0.6f, 0.65f)) ;
                 else if (colorRegion(terrainHeight, sketch.color(80, 60, 60), sketch.color(180), 0.65f, 0.8f)) ;
                 else sketch.fill(255 * terrainHeight);
-
+                sketch.fill(255 * terrainHeight);
                 sketch.rect(xoff * cam.getResolution(), yoff * cam.getResolution(), cam.getResolution(), cam.getResolution());
             }
         }

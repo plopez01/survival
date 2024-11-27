@@ -1,6 +1,7 @@
 package me.plopez.survivalgame.objects.entity;
 
 import me.plopez.survivalgame.objects.WorldObject;
+import me.plopez.survivalgame.rendering.Terrain;
 import me.plopez.survivalgame.rendering.World;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -31,10 +32,15 @@ public abstract class Entity extends WorldObject {
     public void tick(World world) {
         float comandProgress = PApplet.constrain(travelledDistance / (PVector.dist(startPos, target)+1), 0, 1);
 
-        System.out.println(comandProgress);
 
         PVector newPos = PVector.lerp(startPos, target, comandProgress);
-        travelledDistance += speed / (sketch.frameRate);
+
+        Terrain terrain = world.getTerrain();
+        float slope = (terrain.getHeight(newPos) / terrain.getHeight(transform));
+        slope = Math.abs(slope-1)*100000;
+        System.out.println(slope);
+
+        travelledDistance += speed / (sketch.frameRate + slope);
 
         transform.x = newPos.x;
         transform.y = newPos.y;

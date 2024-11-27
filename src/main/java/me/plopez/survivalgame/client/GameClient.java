@@ -29,7 +29,7 @@ public class GameClient extends Client {
     public GameClient(String address, int port, String playerName) throws IOException {
         super(sketch, address, port);
 
-        myPlayer = new Player(playerName, 100, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
+        myPlayer = new Player(playerName, 5, sketch.color(sketch.random(255), sketch.random(255), sketch.random(255)));
         // Download world
         try {
             // Server handshake
