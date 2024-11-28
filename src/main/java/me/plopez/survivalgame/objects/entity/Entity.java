@@ -31,8 +31,6 @@ public abstract class Entity extends WorldObject {
     public void tick(World world) {
         float comandProgress = PApplet.constrain(travelledDistance / (PVector.dist(startPos, target)+1), 0, 1);
 
-        System.out.println(comandProgress);
-
         PVector newPos = PVector.lerp(startPos, target, comandProgress);
         travelledDistance += speed / (sketch.frameRate);
 
